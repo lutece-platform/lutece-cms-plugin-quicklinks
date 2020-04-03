@@ -52,7 +52,7 @@ public abstract class AbstractEntryTest extends LuteceTestCase
             daoUtil.setString( ++nIndex, className );
             daoUtil.setString( ++nIndex, templateCreate );
             daoUtil.setString( ++nIndex, templateModify );
-            daoUtil.executeQuery( );
+            daoUtil.executeUpdate( );
         }
     }
     
@@ -62,7 +62,7 @@ public abstract class AbstractEntryTest extends LuteceTestCase
         {
             int nIndex = 0;
             daoUtil.setInt( ++nIndex, id );
-            daoUtil.executeQuery( );
+            daoUtil.executeUpdate( );
         }
     }
     
