@@ -33,14 +33,13 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  *
@@ -54,7 +53,7 @@ public final class EntryHome
     protected static final int STEP = 1;
 
     // Static variable pointed at the DAO instance
-    private static IEntryDAO _dao = (IEntryDAO) SpringContextService.getPluginBean( QuicklinksPlugin.PLUGIN_NAME, "quicklinks.entryDAO" );
+    private static IEntryDAO _dao = SpringContextService.getBean( "quicklinks.entryDAO" );
 
     /**
      * Private constructor - this class need not be instantiated
@@ -98,25 +97,9 @@ public final class EntryHome
         {
             entrySpecific = (IEntry) Class.forName( entryType.getClassName( ) ).newInstance( );
         }
-        catch( ClassNotFoundException e )
+        catch( IllegalAccessException | InstantiationException | ClassNotFoundException e )
         {
-            // class doesn't exist
             AppLogService.error( e );
-
-            return null;
-        }
-        catch( InstantiationException e )
-        {
-            // Class is abstract or is an interface or haven't accessible builder
-            AppLogService.error( e );
-
-            return null;
-        }
-        catch( IllegalAccessException e )
-        {
-            // can't access to the class
-            AppLogService.error( e );
-
             return null;
         }
 
@@ -204,7 +187,7 @@ public final class EntryHome
         }
 
         // Move up all orders in old list
-        Collection<IEntry> listEntryMoveUp = new ArrayList<IEntry>( );
+        Collection<IEntry> listEntryMoveUp;
 
         if ( entryOld.getIdParent( ) == 0 )
         {
@@ -228,7 +211,7 @@ public final class EntryHome
         }
 
         // Move down all orders in new list
-        Collection<IEntry> listEntryMoveDown = new ArrayList<IEntry>( );
+        Collection<IEntry> listEntryMoveDown;
 
         if ( ( entry.getIdParent( ) == 0 ) )
         {
@@ -321,9 +304,8 @@ public final class EntryHome
      */
     public static Collection<IEntry> findByFilter( EntryFilter entryFilter, Plugin plugin )
     {
-        Collection<IEntry> listEntry = new ArrayList<IEntry>( );
-        Collection<IEntry> listEntrySpecific = new ArrayList<IEntry>( );
-        listEntry = _dao.findByFilter( entryFilter, plugin );
+        Collection<IEntry> listEntrySpecific = new ArrayList<>( );
+        Collection<IEntry> listEntry = _dao.findByFilter( entryFilter, plugin );
 
         for ( IEntry entry : listEntry )
         {
@@ -352,23 +334,9 @@ public final class EntryHome
         {
             entrySpecific = (IEntry) Class.forName( entry.getEntryType( ).getClassName( ) ).newInstance( );
         }
-        catch( ClassNotFoundException e )
+        catch( IllegalAccessException | InstantiationException | ClassNotFoundException e )
         {
             // class doesn't exist
-            AppLogService.error( e );
-
-            return null;
-        }
-        catch( InstantiationException e )
-        {
-            // Class is abstract or is an interface or haven't accessible builder
-            AppLogService.error( e );
-
-            return null;
-        }
-        catch( IllegalAccessException e )
-        {
-            // can't access to the class
             AppLogService.error( e );
 
             return null;
@@ -407,7 +375,7 @@ public final class EntryHome
 
         Collection<IEntry> listEntry = findByFilter( filter, plugin );
 
-        if ( ( listEntry == null ) || ( listEntry.size( ) != 1 ) )
+        if ( listEntry.size( ) != 1 )
         {
             return null;
         }
@@ -434,7 +402,7 @@ public final class EntryHome
 
         Collection<IEntry> listEntry = findByFilter( filter, plugin );
 
-        return ( listEntry == null ) ? 0 : listEntry.size( );
+        return listEntry.size( );
     }
 
     /**

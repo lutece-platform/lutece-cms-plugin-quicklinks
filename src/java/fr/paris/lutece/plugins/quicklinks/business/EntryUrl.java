@@ -33,6 +33,14 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
+import java.util.HashMap;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.quicklinks.service.EntryUrlService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -41,14 +49,6 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.util.HashMap;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * The class Entry Text
@@ -226,7 +226,7 @@ public class EntryUrl extends Entry
     @Override
     public String getHtml( Plugin plugin, Locale locale )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_ENTRY_URL, this );
 
@@ -312,11 +312,6 @@ public class EntryUrl extends Entry
         int nDisplayProperties = Integer.parseInt( strDisplayProperties );
         int nLinkProperties = Integer.parseInt( strLinkProperties );
 
-        if ( !checkUrl( request, strUrl ) )
-        {
-            return MESSAGE_ERROR_IN_URL;
-        }
-
         setUrl( strUrl );
 
         // Check image
@@ -343,21 +338,6 @@ public class EntryUrl extends Entry
         setEntryUrlLinkProperties( entryUrlLinkProperties );
 
         return null;
-    }
-
-    /**
-     * Check the url
-     * 
-     * @param requet
-     *            The {@link HttpServletRequest}
-     * @param strUrl
-     *            The url in String format
-     * @return true if url is valid, false else
-     */
-    private boolean checkUrl( HttpServletRequest requet, String strUrl )
-    {
-        // The url is not checked
-        return true;
     }
 
     @Override

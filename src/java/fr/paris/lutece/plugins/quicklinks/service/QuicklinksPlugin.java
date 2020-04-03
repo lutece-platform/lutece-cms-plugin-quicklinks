@@ -46,6 +46,7 @@ public class QuicklinksPlugin extends PluginDefaultImplementation
     /**
      * Initialize the plugin {@link Quicklinks}
      */
+    @Override
     public void init( )
     {
         // Initialize the Quicklinks service

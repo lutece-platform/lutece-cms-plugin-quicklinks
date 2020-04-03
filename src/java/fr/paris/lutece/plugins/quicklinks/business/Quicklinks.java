@@ -33,21 +33,15 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import com.sun.corba.se.spi.copyobject.CopierManager;
+import java.util.HashMap;
+import java.util.Locale;
 
-import fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin;
-import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 import fr.paris.lutece.portal.service.workgroup.WorkgroupRemovalListenerService;
 import fr.paris.lutece.util.xml.XmlUtil;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
 
 /**
  *
@@ -239,7 +233,7 @@ public class Quicklinks implements AdminWorkgroupResource, RBACResource, Cloneab
     public StringBuffer getXml( Plugin plugin, Locale locale )
     {
         StringBuffer strXml = new StringBuffer( );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( ATTRIBUTE_QUICKLINKS_ID, String.valueOf( getId( ) ) );
         model.put( ATTRIBUTE_QUICKLINKS_TITLE, getTitle( ) );
         model.put( ATTRIBUTE_QUICKLINKS_TYPE, getType( ).getI18nKey( ) );

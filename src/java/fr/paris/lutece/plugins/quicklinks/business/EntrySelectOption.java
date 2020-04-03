@@ -33,15 +33,8 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin;
-import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppLogService;
-
-import sun.net.www.content.text.plain;
-
-import java.util.Locale;
 
 /**
  * The class Entry Select option

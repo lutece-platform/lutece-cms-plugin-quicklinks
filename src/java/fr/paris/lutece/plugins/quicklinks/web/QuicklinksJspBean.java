@@ -75,6 +75,7 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -304,9 +305,8 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         String strCssStyle = request.getParameter( PARAMETER_CSS_STYLE );
 
         // Check mandatory fields
-        if ( ( strTitle == null ) || strTitle.equals( EMPTY_STRING ) || ( strType == null ) || !strType.matches( REGEX_ID ) || ( strWorkgroupKey == null )
-                || strWorkgroupKey.equals( EMPTY_STRING ) || ( strRoleKey == null ) || strRoleKey.equals( EMPTY_STRING ) || ( strState == null )
-                || strState.equals( EMPTY_STRING ) )
+        
+        if ( StringUtil.isAnyEmpty( strTitle, strWorkgroupKey, strRoleKey, strState) || ( strType == null ) || !strType.matches( REGEX_ID ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -380,8 +380,8 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         Collection<IEntry> listEntry = EntryHome.findByFilter( filter, plugin );
 
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_STYLES_PER_PAGE, DEFAULT_PAGINATOR_STYLES_PER_PAGE );
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
 
         UrlItem url = new UrlItem( JSP_URL_PREFIX + JSP_URL_MODIFY );
         url.addParameter( PARAMETER_QUICKLINKS_ID, quicklinks.getId( ) );
@@ -420,9 +420,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         String strCssStyle = request.getParameter( PARAMETER_CSS_STYLE );
 
         // Check mandatory fields
-        if ( ( strTitle == null ) || strTitle.equals( EMPTY_STRING ) || ( strType == null ) || !strType.matches( REGEX_ID ) || ( strWorkgroupKey == null )
-                || strWorkgroupKey.equals( EMPTY_STRING ) || ( strRoleKey == null ) || strRoleKey.equals( EMPTY_STRING ) || ( strState == null )
-                || strState.equals( EMPTY_STRING ) )
+        if ( StringUtil.isAnyEmpty( strTitle, strWorkgroupKey, strRoleKey, strState) || ( strType == null ) || !strType.matches( REGEX_ID ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }

@@ -33,10 +33,9 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-
 import java.util.Collection;
-import java.util.List;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Interface IEntryTypeDAO

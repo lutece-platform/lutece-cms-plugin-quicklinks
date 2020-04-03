@@ -302,7 +302,6 @@ public class EntryDAO implements IEntryDAO
         {
             daoUtil.setInt( nIndex, filter.getIdParent( ) );
             AppLogService.debug( "Param" + nIndex + " (getIdParent) = " + filter.getIdParent( ) );
-            nIndex++;
         }
         return daoUtil;
     }

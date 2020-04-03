@@ -33,14 +33,11 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.portal.service.i18n.I18nService;
+import java.util.Collection;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
-
-import java.util.Collection;
-import java.util.Locale;
 
 /**
  * The Home class for {@link Quicklinks}
@@ -49,8 +46,15 @@ import java.util.Locale;
 public class QuicklinksHome
 {
     // Static variable pointed at the DAO instance
-    private static IQuicklinksDAO _dao = (IQuicklinksDAO) SpringContextService.getPluginBean( "quicklinks", "quicklinks.quicklinksDAO" );
+    private static IQuicklinksDAO _dao = SpringContextService.getBean( "quicklinks.quicklinksDAO" );
 
+    /**
+     * Private constructor - this class need not be instantiated
+     */
+    private QuicklinksHome( )
+    {
+    }
+    
     /**
      * Insert a new record in the table.
      * 

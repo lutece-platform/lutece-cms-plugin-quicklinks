@@ -335,7 +335,6 @@ public final class QuicklinksDAO implements IQuicklinksDAO
         {
             daoUtil.setString( nIndex, filter.getWorkgroup( ) );
             AppLogService.debug( "Param" + nIndex + " (getWorkgroup) = " + filter.getWorkgroup( ) );
-            nIndex++;
         }
 
         return daoUtil;

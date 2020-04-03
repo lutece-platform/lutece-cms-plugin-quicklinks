@@ -35,8 +35,6 @@ package fr.paris.lutece.plugins.quicklinks.business;
 
 import fr.paris.lutece.util.ReferenceList;
 
-import java.util.Collection;
-
 /**
  * The different types of {@link Quicklinks}
  *

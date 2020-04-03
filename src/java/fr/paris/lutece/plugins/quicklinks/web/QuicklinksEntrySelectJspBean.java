@@ -59,6 +59,8 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * This class provides the user interface to manage {@link Quicklinks} features ( manage, create, modify, remove)
  */
@@ -111,17 +113,6 @@ public class QuicklinksEntrySelectJspBean extends PluginAdminPageJspBean
     private static final String EMPTY_STRING = "";
     private static final String UNAUTHORIZED = "Unauthorized";
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean#init(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
-    @Override
-    public void init( HttpServletRequest request, String strRight ) throws AccessDeniedException
-    {
-        super.init( request, strRight );
-    }
-
     /**
      * Get the authorized {@link EntrySelectOption}, filtered by quicklinks workgroup
      *
@@ -147,7 +138,7 @@ public class QuicklinksEntrySelectJspBean extends PluginAdminPageJspBean
         IEntry entry = EntryHome.findByPrimaryKey( entrySelectOption.getIdEntry( ), getPlugin( ) );
         Quicklinks quicklinks = QuicklinksHome.findByPrimaryKey( entry.getIdQuicklinks( ), getPlugin( ) );
 
-        if ( ( entry == null ) || !AdminWorkgroupService.isAuthorized( quicklinks, getUser( ) )
+        if ( !AdminWorkgroupService.isAuthorized( quicklinks, getUser( ) )
                 || !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( entry.getId( ) ), strPermissionType, getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
@@ -226,7 +217,7 @@ public class QuicklinksEntrySelectJspBean extends PluginAdminPageJspBean
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_CREATE_SELECT_OPTION );
 
         model.put( MARK_LOCALE, getLocale( ) );
@@ -252,8 +243,7 @@ public class QuicklinksEntrySelectJspBean extends PluginAdminPageJspBean
         String strTitle = request.getParameter( PARAMETER_TITLE );
         String strUrl = request.getParameter( PARAMETER_URL );
 
-        if ( ( strIdEntry == null ) || !strIdEntry.matches( REGEX_ID ) || ( strTitle == null ) || strTitle.equals( EMPTY_STRING ) || ( strUrl == null )
-                || strUrl.equals( EMPTY_STRING ) )
+        if ( ( strIdEntry == null ) || !strIdEntry.matches( REGEX_ID ) || StringUtils.isEmpty( strTitle ) || StringUtils.isEmpty( strUrl ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -307,7 +297,7 @@ public class QuicklinksEntrySelectJspBean extends PluginAdminPageJspBean
         Plugin plugin = getPlugin( );
         EntrySelectOption entrySelectOption = getAuthorizedEntry( request, QuicklinksResourceIdService.PERMISSION_MODIFY );
         IEntry entry = EntryHome.findByPrimaryKey( entrySelectOption.getIdEntry( ), plugin );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_MODIFY_SELECT_OPTION );
 
         model.put( MARK_LOCALE, getLocale( ) );
@@ -365,12 +355,7 @@ public class QuicklinksEntrySelectJspBean extends PluginAdminPageJspBean
     {
         EntrySelectOption entrySelectOption = getAuthorizedEntry( request, QuicklinksResourceIdService.PERMISSION_MODIFY );
 
-        if ( ( entrySelectOption == null ) )
-        {
-            throw new AccessDeniedException( UNAUTHORIZED );
-        }
-
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_OPTION_ID, String.valueOf( entrySelectOption.getId( ) ) );
         model.put( MARK_ENTRY_ID, String.valueOf( entrySelectOption.getIdEntry( ) ) );
 

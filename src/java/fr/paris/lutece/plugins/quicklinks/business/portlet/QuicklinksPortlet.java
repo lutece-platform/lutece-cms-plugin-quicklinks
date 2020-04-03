@@ -63,13 +63,6 @@ public class QuicklinksPortlet extends Portlet
     private int _nStatus;
 
     /**
-     * Sets the identifier of the portlet type to the value specified in the ArticlesListPortletHome class
-     */
-    public QuicklinksPortlet( )
-    {
-    }
-
-    /**
      * Returns the Xml code of the quicklinks portlet without XML heading
      *
      * @param request
@@ -102,9 +95,7 @@ public class QuicklinksPortlet extends Portlet
 
         XmlUtil.endElement( strXml, TAG_QUICKLINKS_PORTLET );
 
-        String strReturn = addPortletTags( strXml );
-
-        return strReturn;
+        return addPortletTags( strXml );
     }
 
     /**
@@ -182,6 +173,7 @@ public class QuicklinksPortlet extends Portlet
      *
      * @return The Status
      */
+    @Override
     public int getStatus( )
     {
         return _nStatus;
@@ -193,6 +185,7 @@ public class QuicklinksPortlet extends Portlet
      * @param nStatus
      *            The Status
      */
+    @Override
     public void setStatus( int nStatus )
     {
         _nStatus = nStatus;
