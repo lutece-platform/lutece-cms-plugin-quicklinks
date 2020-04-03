@@ -48,6 +48,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The class Entry Text
@@ -279,10 +280,10 @@ public class EntryUrl extends Entry
         String strLinkProperties = request.getParameter( PARAMETER_LINK_PROPERTIES );
         strLinkProperties = ( strLinkProperties == null ) ? EMPTY_STRING : strLinkProperties;
 
-        boolean bUpdateImage = ( ( strUpdateImage != null ) && !strUpdateImage.equals( EMPTY_STRING ) ) ? true : false;
+        boolean bUpdateImage = StringUtils.isNotEmpty( strUpdateImage );
 
         // Check Target
-        if ( ( strTarget == null ) || ( strTarget.equals( EMPTY_STRING ) && ( ( strTargetFramename == null ) || strTargetFramename.equals( "" ) ) ) )
+        if ( StringUtils.isEmpty( strTarget ) && StringUtils.isEmpty( strTargetFramename ) )
         {
             return Messages.MANDATORY_FIELDS;
         }
@@ -297,13 +298,13 @@ public class EntryUrl extends Entry
         }
 
         // Check description
-        if ( ( strDescription != null ) && !strDescription.equals( EMPTY_STRING ) )
+        if ( StringUtils.isNotEmpty( strDescription ) )
         {
             this.setDescription( strDescription );
         }
 
-        if ( ( strUrl == null ) || strUrl.equals( EMPTY_STRING ) || ( strDisplayProperties == null ) || !strDisplayProperties.matches( REGEX_ID )
-                || ( strLinkProperties == null ) || !strLinkProperties.matches( REGEX_ID ) )
+        if ( StringUtils.isEmpty( strUrl ) || ( strDisplayProperties == null ) || !strDisplayProperties.matches( REGEX_ID )
+                || !strLinkProperties.matches( REGEX_ID ) )
         {
             return Messages.MANDATORY_FIELDS;
         }

@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Messages;
+import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
@@ -84,7 +85,6 @@ public class EntrySelect extends Entry
     private static final String PARAMETER_ENTRY_ID = "entry_id";
 
     // I18n messages
-    private static final String MESSAGE_COPY = "quicklinks.copy.titleCopy.prefix";
     private int _nItemsPerPage;
     private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
@@ -118,6 +118,7 @@ public class EntrySelect extends Entry
      *            The new name
      * @return The {@link IEntry} copy
      */
+    @Override
     public IEntry copy( int nIdQuicklinks, Plugin plugin, String strNewName )
     {
         IEntry copy = super.copy( nIdQuicklinks, plugin, strNewName );
@@ -133,7 +134,7 @@ public class EntrySelect extends Entry
     @Override
     public String getHtml( Plugin plugin, Locale locale )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_ENTRY_SELECT, this );
         model.put( MARK_OPTION_LIST, EntrySelectOptionHome.findByEntry( getId( ), plugin ) );
@@ -205,14 +206,14 @@ public class EntrySelect extends Entry
         Collection<EntrySelectOption> listEntrySelectOption = EntrySelectOptionHome.findByEntry( getId( ), plugin );
 
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_STYLES_PER_PAGE, DEFAULT_PAGINATOR_STYLES_PER_PAGE );
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
 
         UrlItem url = new UrlItem( JSP_URL_PREFIX + JSP_URL_MODIFY );
         url.addParameter( PARAMETER_ENTRY_ID, request.getParameter( PARAMETER_ENTRY_ID ) );
-        url.addParameter( Paginator.PARAMETER_ITEMS_PER_PAGE, request.getParameter( Paginator.PARAMETER_ITEMS_PER_PAGE ) );
+        url.addParameter( AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, request.getParameter( AbstractPaginator.PARAMETER_ITEMS_PER_PAGE ) );
 
-        Paginator paginator = new Paginator( (List<EntrySelectOption>) listEntrySelectOption, _nItemsPerPage, url.getUrl( ), Paginator.PARAMETER_PAGE_INDEX,
+        Paginator paginator = new Paginator( (List<EntrySelectOption>) listEntrySelectOption, _nItemsPerPage, url.getUrl( ), AbstractPaginator.PARAMETER_PAGE_INDEX,
                 _strCurrentPageIndex );
 
         model.put( MARK_PAGINATOR, paginator );

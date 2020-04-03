@@ -64,6 +64,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class QuicklinksPortletJspBean extends PortletJspBean
 {
+    private static final long serialVersionUID = -1659013399553752236L;
+
     ////////////////////////////////////////////////////////////////////////////
     // Constants
     public static final String RIGHT_MANAGE_QUICKLINKS = "QUICKLINKS_MANAGEMENT";
@@ -87,7 +89,7 @@ public class QuicklinksPortletJspBean extends PortletJspBean
      */
     public String getCreate( HttpServletRequest request )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         String strIdPortletType = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
         PortletType portletType = PortletTypeHome.findByPrimaryKey( strIdPortletType );
@@ -125,7 +127,7 @@ public class QuicklinksPortletJspBean extends PortletJspBean
     public String getModify( HttpServletRequest request )
     {
         Quicklinks quicklinks;
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = -1;
 

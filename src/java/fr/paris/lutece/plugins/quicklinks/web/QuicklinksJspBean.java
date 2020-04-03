@@ -33,6 +33,16 @@
  */
 package fr.paris.lutece.plugins.quicklinks.web;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.quicklinks.business.Entry;
 import fr.paris.lutece.plugins.quicklinks.business.EntryFilter;
 import fr.paris.lutece.plugins.quicklinks.business.EntryHome;
@@ -62,17 +72,10 @@ import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class provides the user interface to manage {@link Quicklinks} features ( manage, create, modify, remove)
@@ -177,17 +180,6 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
     private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean#init(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
-    @Override
-    public void init( HttpServletRequest request, String strRight ) throws AccessDeniedException
-    {
-        super.init( request, strRight );
-    }
-
     /**
      * Get the {@link Quicklinks} management page
      * 
@@ -197,20 +189,20 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
      */
     public String getManageQuicklinks( HttpServletRequest request )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         Collection<Quicklinks> quicklinksList = QuicklinksHome.findAll( getPlugin( ) );
         quicklinksList = AdminWorkgroupService.getAuthorizedCollection( quicklinksList, getUser( ) );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_MANAGE );
 
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_STYLES_PER_PAGE, DEFAULT_PAGINATOR_STYLES_PER_PAGE );
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
 
         UrlItem url = new UrlItem( JSP_URL_PREFIX + JSP_URL_MANAGE );
 
-        Paginator paginator = new Paginator( (List<Quicklinks>) quicklinksList, _nItemsPerPage, url.getUrl( ), Paginator.PARAMETER_PAGE_INDEX,
+        Paginator paginator = new Paginator( (List<Quicklinks>) quicklinksList, _nItemsPerPage, url.getUrl( ), AbstractPaginator.PARAMETER_PAGE_INDEX,
                 _strCurrentPageIndex );
-        Collection<HashMap<String, Object>> listQuicklinksWithListActions = new ArrayList<HashMap<String, Object>>( );
+        Collection<HashMap<String, Object>> listQuicklinksWithListActions = new ArrayList<>( );
 
         for ( Quicklinks quicklinks : (List<Quicklinks>) paginator.getPageItems( ) )
         {
@@ -261,7 +253,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_CREATE );
 
         ReferenceList listType = new ReferenceList( );
@@ -353,7 +345,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         Plugin plugin = getPlugin( );
         Locale locale = getLocale( );
         Quicklinks quicklinks = getAuthorizedQuicklinks( request, QuicklinksResourceIdService.PERMISSION_MODIFY );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_MODIFY );
 
         // General attributes
@@ -394,7 +386,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         UrlItem url = new UrlItem( JSP_URL_PREFIX + JSP_URL_MODIFY );
         url.addParameter( PARAMETER_QUICKLINKS_ID, quicklinks.getId( ) );
 
-        Paginator paginator = new Paginator( (List<IEntry>) listEntry, _nItemsPerPage, url.getUrl( ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        Paginator paginator = new Paginator( (List<IEntry>) listEntry, _nItemsPerPage, url.getUrl( ), AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
 
         model.put( MARK_NB_ITEMS_PER_PAGE, String.valueOf( _nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
@@ -534,7 +526,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
             }, AdminMessage.TYPE_STOP );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_QUICKLINKS_ID, String.valueOf( quicklinks.getId( ) ) );
 
         return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRMATION_REMOVE_QUICKLINKS, JSP_URL_PREFIX + JSP_URL_DELETE_QUICKLINKS,
@@ -700,7 +692,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_CREATE_ENTRY );
 
         IEntry entry = EntryHome.getSpecificEntry( entryType, plugin );
@@ -745,7 +737,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         int nIdType = Integer.parseInt( strIdType );
         EntryType entryType = EntryTypeHome.findByPrimaryKey( nIdType, plugin );
 
-        if ( ( quicklinks == null ) || ( entryType == null ) || ( strTitle == null ) || strTitle.equals( EMPTY_STRING ) )
+        if ( ( entryType == null ) || StringUtils.isEmpty( strTitle ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -826,7 +818,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_MODIFY_ENTRY );
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
@@ -922,7 +914,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_ENTRY_ID, String.valueOf( entry.getId( ) ) );
 
         return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRMATION_REMOVE_ENTRY, JSP_URL_PREFIX + JSP_URL_DELETE_ENTRY, AdminMessage.TYPE_QUESTION,
@@ -1000,7 +992,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_QUICKLINKS_ID, String.valueOf( quicklinks.getId( ) ) );
 
         return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRMATION_DISABLE_QUICKLINKS, JSP_URL_PREFIX + JSP_URL_DISABLE_QUICKLINKS,
