@@ -66,6 +66,7 @@ public class EntryDAO implements IEntryDAO
     private static final String SQL_QUERY_SELECT_BY_FILTER_PARENT = " id_parent = ? ";
     private static final String SQL_QUERY_SELECT_BY_FILTER_ORDER_BY = " ORDER BY id_order ";
     private static final String EMPTY_STRING = "";
+    private static final String PARAM = "Param";
 
     /**
      * Calculate a new primary key to add a new {@link Entry}
@@ -191,7 +192,7 @@ public class EntryDAO implements IEntryDAO
      */
     public Collection<IEntry> findByFilter( EntryFilter entryFilter, Plugin plugin )
     {
-        Collection<IEntry> listQuicklinks = new ArrayList<IEntry>( );
+        Collection<IEntry> listQuicklinks = new ArrayList<>( );
         try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER_SELECT, entryFilter, plugin ) )
         {
             daoUtil.executeQuery( );
@@ -273,35 +274,35 @@ public class EntryDAO implements IEntryDAO
         if ( filter.getId( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getId( ) );
-            AppLogService.debug( "Param" + nIndex + " (getId) = " + filter.getId( ) );
+            AppLogService.debug( PARAM + nIndex + " (getId) = " + filter.getId( ) );
             nIndex++;
         }
 
         if ( filter.getIdQuicklinks( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdQuicklinks( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdQuicklinks) = " + filter.getIdQuicklinks( ) );
+            AppLogService.debug( PARAM + nIndex + " (getIdQuicklinks) = " + filter.getIdQuicklinks( ) );
             nIndex++;
         }
 
         if ( filter.getIdType( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdType( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdType) = " + filter.getIdType( ) );
+            AppLogService.debug( PARAM + nIndex + " (getIdType) = " + filter.getIdType( ) );
             nIndex++;
         }
 
         if ( filter.getIdOrder( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdOrder( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdOrder) = " + filter.getIdOrder( ) );
+            AppLogService.debug( PARAM + nIndex + " (getIdOrder) = " + filter.getIdOrder( ) );
             nIndex++;
         }
 
         if ( filter.getIdParent( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdParent( ) );
-            AppLogService.debug( "Param" + nIndex + " (getIdParent) = " + filter.getIdParent( ) );
+            AppLogService.debug( PARAM + nIndex + " (getIdParent) = " + filter.getIdParent( ) );
         }
         return daoUtil;
     }

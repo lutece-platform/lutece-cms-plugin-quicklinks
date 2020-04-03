@@ -269,7 +269,7 @@ public class Quicklinks implements AdminWorkgroupResource, RBACResource, Cloneab
      */
     private void getEntryXml( StringBuffer strXml, IEntry entry, Plugin plugin, Locale locale )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( ATTRIBUTE_ENTRY_ID, String.valueOf( entry.getId( ) ) );
         model.put( ATTRIBUTE_ENTRY_TITLE, entry.getTitle( ) );
         model.put( ATTRIBUTE_ENTRY_TYPE, String.valueOf( entry.getEntryType( ).getId( ) ) );

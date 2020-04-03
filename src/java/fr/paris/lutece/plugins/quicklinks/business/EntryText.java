@@ -63,12 +63,12 @@ public class EntryText extends Entry
     private String _strDescription;
 
     /**
-     * @param _strDescription
+     * @param strDescription
      *            the _strDescription to set
      */
-    public void setDescription( String _strDescription )
+    public void setDescription( String strDescription )
     {
-        this._strDescription = _strDescription;
+        _strDescription = strDescription;
     }
 
     /**
@@ -96,7 +96,7 @@ public class EntryText extends Entry
     @Override
     public String getHtml( Plugin plugin, Locale locale )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_ENTRY_TEXT, this );
 

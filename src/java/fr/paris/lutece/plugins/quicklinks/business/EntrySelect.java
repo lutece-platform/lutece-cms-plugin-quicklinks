@@ -33,6 +33,14 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -41,13 +49,6 @@ import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * The class Entry Select
@@ -84,9 +85,7 @@ public class EntrySelect extends Entry
     // Parameters
     private static final String PARAMETER_ENTRY_ID = "entry_id";
 
-    // I18n messages
     private int _nItemsPerPage;
-    private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
 
     // Attributes
@@ -201,13 +200,13 @@ public class EntrySelect extends Entry
     }
 
     @Override
-    public void getSpecificParameters( HttpServletRequest request, HashMap<String, Object> model, Plugin plugin )
+    public void getSpecificParameters( HttpServletRequest request, Map<String, Object> model, Plugin plugin )
     {
         Collection<EntrySelectOption> listEntrySelectOption = EntrySelectOptionHome.findByEntry( getId( ), plugin );
 
-        _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_STYLES_PER_PAGE, DEFAULT_PAGINATOR_STYLES_PER_PAGE );
+        int defaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_STYLES_PER_PAGE, DEFAULT_PAGINATOR_STYLES_PER_PAGE );
         _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, defaultItemsPerPage );
 
         UrlItem url = new UrlItem( JSP_URL_PREFIX + JSP_URL_MODIFY );
         url.addParameter( PARAMETER_ENTRY_ID, request.getParameter( PARAMETER_ENTRY_ID ) );

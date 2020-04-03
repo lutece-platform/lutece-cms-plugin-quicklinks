@@ -33,16 +33,17 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import java.util.HashMap;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * The class Entry Text
@@ -85,7 +86,7 @@ public class EntryInternalLink extends Entry
     @Override
     public String getHtml( Plugin plugin, Locale locale )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_ENTRY_INTERNAL_LINK, this );
 
@@ -123,7 +124,7 @@ public class EntryInternalLink extends Entry
     }
 
     @Override
-    public void getSpecificParameters( HttpServletRequest request, HashMap<String, Object> model, Plugin plugin )
+    public void getSpecificParameters( HttpServletRequest request, Map<String, Object> model, Plugin plugin )
     {
         model.put( MARK_BASE_URL, AppPathService.getBaseUrl( request ) );
     }

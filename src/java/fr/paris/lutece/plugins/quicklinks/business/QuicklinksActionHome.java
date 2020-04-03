@@ -33,13 +33,13 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * This class provides instances management methods (create, find, ...) for SpaceAction objects
@@ -47,7 +47,7 @@ import java.util.Locale;
 public final class QuicklinksActionHome
 {
     // Static variable pointed at the DAO instance
-    private static IQuicklinksActionDAO _dao = (IQuicklinksActionDAO) SpringContextService.getPluginBean( "quicklinks", "quicklinks.quicklinksActionDAO" );
+    private static IQuicklinksActionDAO _dao = SpringContextService.getBean( "quicklinks.quicklinksActionDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

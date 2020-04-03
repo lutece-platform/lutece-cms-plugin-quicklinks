@@ -33,13 +33,13 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Interface for Entry
@@ -150,7 +150,7 @@ public interface IEntry
      * @param plugin
      *            The {@link Plugin}
      */
-    public abstract void getSpecificParameters( HttpServletRequest request, HashMap<String, Object> model, Plugin plugin );
+    public abstract void getSpecificParameters( HttpServletRequest request, Map<String, Object> model, Plugin plugin );
 
     /**
      * Set the specific parameters for the entry

@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class EntryInternalLinkHome
 {
     // Static variable pointed at the DAO instance
-    private static IEntrySpecificDAO _dao = (IEntrySpecificDAO) SpringContextService.getPluginBean( "quicklinks", "quicklinks.entryInternalLinkDAO" );
+    private static IEntrySpecificDAO _dao = SpringContextService.getBean( "quicklinks.entryInternalLinkDAO" );
 
     /**
      * Private constructor - this class need not be instantiated

@@ -135,7 +135,7 @@ public class QuicklinksInclude implements PageInclude
      */
     private String getTemplateHtmlForQuicklinks( Quicklinks quicklinks, Plugin plugin, Locale locale )
     {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_QUICKLINKS, quicklinks );
 
         InputSource in = new InputSource( new ByteArrayInputStream( quicklinks.getXml( plugin, locale ).toString( ).getBytes( ) ) );
@@ -144,15 +144,7 @@ public class QuicklinksInclude implements PageInclude
         {
             model.put( MARK_QUICKLINKS, freemarker.ext.dom.NodeModel.parse( in ) );
         }
-        catch( SAXException e )
-        {
-            AppLogService.error( e );
-        }
-        catch( IOException e )
-        {
-            AppLogService.error( e );
-        }
-        catch( ParserConfigurationException e )
+        catch( ParserConfigurationException | IOException | SAXException e )
         {
             AppLogService.error( e );
         }

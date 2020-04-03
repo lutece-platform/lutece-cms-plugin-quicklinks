@@ -33,14 +33,15 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.util.AppLogService;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class Entry implements IEntry, Cloneable
 {
@@ -286,7 +287,7 @@ public class Entry implements IEntry, Cloneable
      * @param plugin
      *            The {@link Plugin}
      */
-    public void getSpecificParameters( HttpServletRequest request, HashMap<String, Object> model, Plugin plugin )
+    public void getSpecificParameters( HttpServletRequest request, Map<String, Object> model, Plugin plugin )
     {
     }
 

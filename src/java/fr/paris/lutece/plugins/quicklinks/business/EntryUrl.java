@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.quicklinks.business;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -87,9 +88,6 @@ public class EntryUrl extends Entry
     private static final String PARAMETER_IMAGE = "image";
     private static final String PARAMETER_DISPLAY_PROPERTIES = "display_properties";
     private static final String PARAMETER_LINK_PROPERTIES = "link_properties";
-
-    // I18n messages
-    private static final String MESSAGE_ERROR_IN_URL = "quicklinks.entryUrl.message.errorInUrl";
 
     // Attributes
     private String _strTitle;
@@ -341,7 +339,7 @@ public class EntryUrl extends Entry
     }
 
     @Override
-    public void getSpecificParameters( HttpServletRequest request, HashMap<String, Object> model, Plugin plugin )
+    public void getSpecificParameters( HttpServletRequest request, Map<String, Object> model, Plugin plugin )
     {
         int nDisplayPropertiesDefaultValue = AppPropertiesService.getPropertyInt( PROPERTY_DISPLAY_PROPERTIES_DEFAULT_VALUE, DISPLAY_PROPERTIES_DEFAULT_VALUE );
         int nLinkPropertiesDefaultValue = AppPropertiesService.getPropertyInt( PROPERTY_LINK_PROPERTIES_DEFAULT_VALUE, LINK_PROPERTIES_DEFAULT_VALUE );

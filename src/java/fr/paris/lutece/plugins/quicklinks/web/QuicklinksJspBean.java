@@ -209,7 +209,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         {
             Collection<QuicklinksAction> listActions = QuicklinksActionHome.selectActionsByQuicklinksState( quicklinks.isEnabled( ), getPlugin( ),
                     getLocale( ) );
-            HashMap<String, Object> modelQuicklinks = new HashMap<String, Object>( );
+            HashMap<String, Object> modelQuicklinks = new HashMap<>( );
             modelQuicklinks.put( MARK_QUICKLINKS, quicklinks );
 
             if ( quicklinks.getType( ).equals( QuicklinksType.INCLUDE ) )
@@ -306,7 +306,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
 
         // Check mandatory fields
         
-        if ( StringUtil.isAnyEmpty( strTitle, strWorkgroupKey, strRoleKey, strState) || ( strType == null ) || !strType.matches( REGEX_ID ) )
+        if ( StringUtil.isAnyEmpty( strTitle, strWorkgroupKey, strRoleKey, strState ) || ( strType == null ) || !strType.matches( REGEX_ID ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
@@ -386,7 +386,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         UrlItem url = new UrlItem( JSP_URL_PREFIX + JSP_URL_MODIFY );
         url.addParameter( PARAMETER_QUICKLINKS_ID, quicklinks.getId( ) );
 
-        Paginator paginator = new Paginator( (List<IEntry>) listEntry, _nItemsPerPage, url.getUrl( ), AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        Paginator<IEntry> paginator = new Paginator( (List<IEntry>) listEntry, _nItemsPerPage, url.getUrl( ), AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
 
         model.put( MARK_NB_ITEMS_PER_PAGE, String.valueOf( _nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
@@ -420,7 +420,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         String strCssStyle = request.getParameter( PARAMETER_CSS_STYLE );
 
         // Check mandatory fields
-        if ( StringUtil.isAnyEmpty( strTitle, strWorkgroupKey, strRoleKey, strState) || ( strType == null ) || !strType.matches( REGEX_ID ) )
+        if ( StringUtil.isAnyEmpty( strTitle, strWorkgroupKey, strRoleKey, strState ) || ( strType == null ) || !strType.matches( REGEX_ID ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }

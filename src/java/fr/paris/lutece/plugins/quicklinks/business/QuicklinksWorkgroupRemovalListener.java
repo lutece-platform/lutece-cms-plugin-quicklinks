@@ -41,6 +41,8 @@ import fr.paris.lutece.portal.service.util.RemovalListener;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
+
 /**
  * class QuicklinksWorkgroupRemovalListener
  */
@@ -67,12 +69,7 @@ public class QuicklinksWorkgroupRemovalListener implements RemovalListener
 
         Collection<Quicklinks> listQuicklinks = QuicklinksHome.findbyFilter( filter, PluginService.getPlugin( QuicklinksPlugin.PLUGIN_NAME ) );
 
-        if ( ( listQuicklinks != null ) && ( listQuicklinks.size( ) > 0 ) )
-        {
-            return false;
-        }
-
-        return true;
+        return CollectionUtils.isEmpty( listQuicklinks );
     }
 
     /**

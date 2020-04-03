@@ -46,7 +46,7 @@ public class QuicklinksPortletHome extends PortletHome
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IQuicklinksPortletDAO _dao = (IQuicklinksPortletDAO) SpringContextService.getPluginBean( "quicklinks", "quicklinks.quicklinksPortletDAO" );
+    private static IQuicklinksPortletDAO _dao = SpringContextService.getBean( "quicklinks.quicklinksPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
     private static QuicklinksPortletHome _singleton;
@@ -85,9 +85,7 @@ public class QuicklinksPortletHome extends PortletHome
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
-        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
-
-        return strPortletTypeId;
+        return PortletTypeHome.getPortletTypeId( strCurrentClassName );
     }
 
     /**

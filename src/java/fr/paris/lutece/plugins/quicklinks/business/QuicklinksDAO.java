@@ -68,7 +68,8 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     private static final String SQL_QUERY_SELECT_BY_FILTER_WORKGROUP_KEY = " workgroup_key = ? ";
     private static final String SQL_QUERY_SELECT_BY_FILTER_IS_ENABLED = " is_enabled = ? ";
     private static final String SQL_QUERY_SELECT_BY_FILTER_TYPE = " type_quicklinks = ? ";
-
+    private static final String PARAM = "Param";
+    
     /**
      * Calculate a new primary key to add a new {@link Quicklinks}
      * 
@@ -230,7 +231,7 @@ public final class QuicklinksDAO implements IQuicklinksDAO
      */
     public Collection<Quicklinks> findbyFilter( QuicklinksFilter quickLinksFilter, Plugin plugin )
     {
-        Collection<Quicklinks> listQuicklinks = new ArrayList<Quicklinks>( );
+        Collection<Quicklinks> listQuicklinks = new ArrayList<>( );
 
         try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER_SELECT, quickLinksFilter, plugin ) )
         {
@@ -311,7 +312,7 @@ public final class QuicklinksDAO implements IQuicklinksDAO
             for ( String strRoleKey : filter.getRoleKeys( ) )
             {
                 daoUtil.setString( nIndex, strRoleKey );
-                AppLogService.debug( "Param" + nIndex + " (getRoleKey) = " + filter.getRoleKeys( ) );
+                AppLogService.debug( PARAM + nIndex + " (getRoleKey) = " + filter.getRoleKeys( ) );
                 nIndex++;
             }
         }
@@ -319,7 +320,7 @@ public final class QuicklinksDAO implements IQuicklinksDAO
         if ( filter.getType( ) != null )
         {
             daoUtil.setInt( nIndex, filter.getType( ).getValue( ) );
-            AppLogService.debug( "Param" + nIndex + " (getType) = " + filter.getType( ) + "(value int : "
+            AppLogService.debug( PARAM + nIndex + " (getType) = " + filter.getType( ) + "(value int : "
                     + filter.getType( ).getValue( ) + ")" );
             nIndex++;
         }
@@ -327,14 +328,14 @@ public final class QuicklinksDAO implements IQuicklinksDAO
         if ( filter.isEnabled( ) != null )
         {
             daoUtil.setBoolean( nIndex, filter.isEnabled( ) );
-            AppLogService.debug( "Param" + nIndex + " (isEnabled) = " + filter.isEnabled( ) );
+            AppLogService.debug( PARAM + nIndex + " (isEnabled) = " + filter.isEnabled( ) );
             nIndex++;
         }
 
         if ( filter.getWorkgroup( ) != null )
         {
             daoUtil.setString( nIndex, filter.getWorkgroup( ) );
-            AppLogService.debug( "Param" + nIndex + " (getWorkgroup) = " + filter.getWorkgroup( ) );
+            AppLogService.debug( PARAM + nIndex + " (getWorkgroup) = " + filter.getWorkgroup( ) );
         }
 
         return daoUtil;
