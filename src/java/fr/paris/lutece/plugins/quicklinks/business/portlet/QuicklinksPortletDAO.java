@@ -55,83 +55,81 @@ public final class QuicklinksPortletDAO implements IQuicklinksPortletDAO
      * Insert a new record in the table quicklinks_portlet
      *
      *
-     * @param portlet
-     *            the instance of the Portlet object to insert
+     * @param portlet the instance of the Portlet object to insert
      */
     public void insert( Portlet portlet )
     {
         QuicklinksPortlet p = (QuicklinksPortlet) portlet;
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setInt( 2, p.getQuicklinksId( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setInt( 2, p.getQuicklinksId( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Deletes records for a portlet identifier in the table quicklinks_portlet
      *
      *
-     * @param nPortletId
-     *            the portlet identifier
+     * @param nPortletId the portlet identifier
      */
     public void delete( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
-     * Loads the data of Quicklinks Portlet whose identifier is specified in parameter
+     * Loads the data of Quicklinks Portlet whose identifier is specified in
+     * parameter
      *
      *
-     * @param nPortletId
-     *            The Portlet identifier
+     * @param nPortletId The Portlet identifier
      * @return theDocumentListPortlet object
      */
     public Portlet load( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
         QuicklinksPortlet portlet = new QuicklinksPortlet( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            portlet.setId( daoUtil.getInt( 1 ) );
-            portlet.setQuicklinksId( daoUtil.getInt( 2 ) );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                portlet.setId( daoUtil.getInt( 1 ) );
+                portlet.setQuicklinksId( daoUtil.getInt( 2 ) );
+            }
         }
-
-        daoUtil.free( );
-
         return portlet;
     }
 
     /**
      * return number of quicklinks portlet who are associate to the id quicklinks
      * 
-     * @param nIdQuicklinks
-     *            the id of the quicklinks
+     * @param nIdQuicklinks the id of the quicklinks
      * @return number of quicklinks portlet who are associate to the id quicklinks
      */
     public int selectCountPortletByIdQuicklinks( int nIdQuicklinks )
     {
         int nCountPortlet = 0;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_COUNT_PORTLET_BY_ID_QUICKLINKS );
-        daoUtil.setInt( 1, nIdQuicklinks );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_COUNT_PORTLET_BY_ID_QUICKLINKS ) )
         {
-            nCountPortlet = daoUtil.getInt( 1 );
-        }
+            daoUtil.setInt( 1, nIdQuicklinks );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                nCountPortlet = daoUtil.getInt( 1 );
+            }
+
+        }
 
         return nCountPortlet;
     }
@@ -140,17 +138,17 @@ public final class QuicklinksPortletDAO implements IQuicklinksPortletDAO
      * Update the record in the table
      *
      *
-     * @param portlet
-     *            A portlet
+     * @param portlet A portlet
      */
     public void store( Portlet portlet )
     {
         QuicklinksPortlet p = (QuicklinksPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setInt( 2, p.getQuicklinksId( ) );
-        daoUtil.setInt( 3, p.getId( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setInt( 2, p.getQuicklinksId( ) );
+            daoUtil.setInt( 3, p.getId( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 }

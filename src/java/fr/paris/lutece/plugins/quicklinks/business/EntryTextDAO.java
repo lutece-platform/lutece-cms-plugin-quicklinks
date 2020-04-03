@@ -43,18 +43,19 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class EntryTextDAO implements IEntrySpecificDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT title,description " + "FROM quicklinks_entry_text WHERE id_entry = ? ";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO quicklinks_entry_text ( id_entry, title, " + "description ) VALUES ( ?, ?, ? )";
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT title,description "
+            + "FROM quicklinks_entry_text WHERE id_entry = ? ";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO quicklinks_entry_text ( id_entry, title, "
+            + "description ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = " DELETE FROM quicklinks_entry_text WHERE id_entry = ?";
-    private static final String SQL_QUERY_UPDATE = " UPDATE quicklinks_entry_text SET title = ?, " + "description = ? WHERE id_entry = ?";
+    private static final String SQL_QUERY_UPDATE = " UPDATE quicklinks_entry_text SET title = ?, "
+            + "description = ? WHERE id_entry = ?";
 
     /**
      * Load the data of the entry type from the table
      *
-     * @param entry
-     *            The empty entry object
-     * @param plugin
-     *            the plugin
+     * @param entry  The empty entry object
+     * @param plugin the plugin
      * @return the instance of the EntryType
      */
     public IEntry load( IEntry entry, Plugin plugin )
@@ -75,17 +76,18 @@ public class EntryTextDAO implements IEntrySpecificDAO
             return null;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
-        daoUtil.setInt( 1, entryText.getId( ) );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
-            entryText.setTitle( daoUtil.getString( 1 ) );
-            entryText.setDescription( daoUtil.getString( 2 ) );
-        }
+            daoUtil.setInt( 1, entryText.getId( ) );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                entryText.setTitle( daoUtil.getString( 1 ) );
+                entryText.setDescription( daoUtil.getString( 2 ) );
+            }
+
+        }
 
         return entryText;
     }
@@ -93,27 +95,24 @@ public class EntryTextDAO implements IEntrySpecificDAO
     /**
      * Deletes the {@link Entry} whose identifier is specified in parameter
      *
-     * @param nEntryId
-     *            The identifier of the {@link Entry}
-     * @param plugin
-     *            The {@link Plugin}
+     * @param nEntryId The identifier of the {@link Entry}
+     * @param plugin   The {@link Plugin}
      */
     public void delete( int entryId, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, entryId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, entryId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Insert the Entry
      *
-     * @param entry
-     *            The {@link Entry} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param entry  The {@link Entry} object
+     * @param plugin The {@link Plugin}
      * @return The {@link Entry}
      */
     public IEntry insert( IEntry entry, Plugin plugin )
@@ -134,14 +133,15 @@ public class EntryTextDAO implements IEntrySpecificDAO
             return null;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        int nParam = 1;
-        daoUtil.setInt( nParam++, entryText.getId( ) );
-        daoUtil.setString( nParam++, entryText.getTitle( ) );
-        daoUtil.setString( nParam++, entryText.getDescription( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            int nParam = 1;
+            daoUtil.setInt( nParam++, entryText.getId( ) );
+            daoUtil.setString( nParam++, entryText.getTitle( ) );
+            daoUtil.setString( nParam++, entryText.getDescription( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
         return entry;
     }
@@ -149,10 +149,8 @@ public class EntryTextDAO implements IEntrySpecificDAO
     /**
      * Update the {@link Entry}
      *
-     * @param entry
-     *            The {@link Entry} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param entry  The {@link Entry} object
+     * @param plugin The {@link Plugin}
      */
     public void store( IEntry entry, Plugin plugin )
     {
@@ -172,14 +170,15 @@ public class EntryTextDAO implements IEntrySpecificDAO
             return;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
 
-        int nParam = 1;
-        daoUtil.setString( nParam++, entryText.getTitle( ) );
-        daoUtil.setString( nParam++, entryText.getDescription( ) );
+            int nParam = 1;
+            daoUtil.setString( nParam++, entryText.getTitle( ) );
+            daoUtil.setString( nParam++, entryText.getDescription( ) );
 
-        daoUtil.setInt( nParam++, entryText.getId( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.setInt( nParam++, entryText.getId( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 }

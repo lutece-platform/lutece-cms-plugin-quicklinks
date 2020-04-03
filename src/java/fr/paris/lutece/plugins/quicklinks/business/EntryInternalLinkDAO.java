@@ -43,18 +43,19 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class EntryInternalLinkDAO implements IEntrySpecificDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT title, content " + "FROM quicklinks_entry_internal_link WHERE id_entry = ? ";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO quicklinks_entry_internal_link ( id_entry, title, " + "content ) VALUES ( ?, ?, ? )";
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT title, content "
+            + "FROM quicklinks_entry_internal_link WHERE id_entry = ? ";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO quicklinks_entry_internal_link ( id_entry, title, "
+            + "content ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = " DELETE FROM quicklinks_entry_internal_link WHERE id_entry = ?";
-    private static final String SQL_QUERY_UPDATE = " UPDATE quicklinks_entry_internal_link SET title = ?, " + "content = ? WHERE id_entry = ?";
+    private static final String SQL_QUERY_UPDATE = " UPDATE quicklinks_entry_internal_link SET title = ?, "
+            + "content = ? WHERE id_entry = ?";
 
     /**
      * Load the data of the entry type from the table
      *
-     * @param entry
-     *            The empty entry object
-     * @param plugin
-     *            the plugin
+     * @param entry  The empty entry object
+     * @param plugin the plugin
      * @return the instance of the EntryType
      */
     public IEntry load( IEntry entry, Plugin plugin )
@@ -75,17 +76,18 @@ public class EntryInternalLinkDAO implements IEntrySpecificDAO
             return null;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
-        daoUtil.setInt( 1, entryInternalLink.getId( ) );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
-            entryInternalLink.setTitle( daoUtil.getString( 1 ) );
-            entryInternalLink.setContent( daoUtil.getString( 2 ) );
-        }
+            daoUtil.setInt( 1, entryInternalLink.getId( ) );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                entryInternalLink.setTitle( daoUtil.getString( 1 ) );
+                entryInternalLink.setContent( daoUtil.getString( 2 ) );
+            }
+
+        }
 
         return entryInternalLink;
     }
@@ -93,27 +95,24 @@ public class EntryInternalLinkDAO implements IEntrySpecificDAO
     /**
      * Deletes the {@link Entry} whose identifier is specified in parameter
      *
-     * @param nEntryId
-     *            The identifier of the {@link Entry}
-     * @param plugin
-     *            The {@link Plugin}
+     * @param nEntryId The identifier of the {@link Entry}
+     * @param plugin   The {@link Plugin}
      */
     public void delete( int entryId, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, entryId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, entryId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Insert the Entry
      *
-     * @param entry
-     *            The {@link Entry} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param entry  The {@link Entry} object
+     * @param plugin The {@link Plugin}
      * @return The Entry
      */
     public IEntry insert( IEntry entry, Plugin plugin )
@@ -134,14 +133,15 @@ public class EntryInternalLinkDAO implements IEntrySpecificDAO
             return null;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        int nParam = 1;
-        daoUtil.setInt( nParam++, entryInternalLink.getId( ) );
-        daoUtil.setString( nParam++, entryInternalLink.getTitle( ) );
-        daoUtil.setString( nParam++, entryInternalLink.getContent( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            int nParam = 1;
+            daoUtil.setInt( nParam++, entryInternalLink.getId( ) );
+            daoUtil.setString( nParam++, entryInternalLink.getTitle( ) );
+            daoUtil.setString( nParam++, entryInternalLink.getContent( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
         return entry;
     }
@@ -149,10 +149,8 @@ public class EntryInternalLinkDAO implements IEntrySpecificDAO
     /**
      * Update the {@link Entry}
      *
-     * @param entry
-     *            The {@link Entry} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param entry  The {@link Entry} object
+     * @param plugin The {@link Plugin}
      */
     public void store( IEntry entry, Plugin plugin )
     {
@@ -172,14 +170,15 @@ public class EntryInternalLinkDAO implements IEntrySpecificDAO
             return;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
 
-        int nParam = 1;
-        daoUtil.setString( nParam++, entryInternalLink.getTitle( ) );
-        daoUtil.setString( nParam++, entryInternalLink.getContent( ) );
+            int nParam = 1;
+            daoUtil.setString( nParam++, entryInternalLink.getTitle( ) );
+            daoUtil.setString( nParam++, entryInternalLink.getContent( ) );
 
-        daoUtil.setInt( nParam++, entryInternalLink.getId( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.setInt( nParam++, entryInternalLink.getId( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 }

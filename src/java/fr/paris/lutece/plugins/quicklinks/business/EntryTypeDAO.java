@@ -33,12 +33,11 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.util.sql.DAOUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  *
@@ -55,62 +54,56 @@ public class EntryTypeDAO implements IEntryTypeDAO
     /**
      * Load the data of the entry type from the table
      *
-     * @param nIdKey
-     *            The identifier of the entry type
-     * @param plugin
-     *            the plugin
+     * @param nIdKey The identifier of the entry type
+     * @param plugin the plugin
      * @return the instance of the EntryType
      */
     public EntryType load( int nIdKey, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
-        daoUtil.setInt( 1, nIdKey );
-        daoUtil.executeQuery( );
-
         EntryType entryType = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
-            entryType = new EntryType( );
-            entryType.setId( daoUtil.getInt( 1 ) );
-            entryType.setTitleI18nKey( daoUtil.getString( 2 ) );
-            entryType.setClassName( daoUtil.getString( 3 ) );
-            entryType.setTemplateCreate( daoUtil.getString( 4 ) );
-            entryType.setTemplateModify( daoUtil.getString( 5 ) );
+            daoUtil.setInt( 1, nIdKey );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                entryType = new EntryType( );
+                entryType.setId( daoUtil.getInt( 1 ) );
+                entryType.setTitleI18nKey( daoUtil.getString( 2 ) );
+                entryType.setClassName( daoUtil.getString( 3 ) );
+                entryType.setTemplateCreate( daoUtil.getString( 4 ) );
+                entryType.setTemplateModify( daoUtil.getString( 5 ) );
+            }
         }
-
-        daoUtil.free( );
-
         return entryType;
     }
 
     /**
      * Load the data of all entry type returns them in a list
      * 
-     * @param plugin
-     *            the plugin
+     * @param plugin the plugin
      * @return the {@link Collection} of entry type
      */
     public Collection<EntryType> select( Plugin plugin )
     {
-        Collection<EntryType> listEntryType = new ArrayList<EntryType>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
-        daoUtil.executeQuery( );
-
-        EntryType entryType = null;
-
-        while ( daoUtil.next( ) )
+        Collection<EntryType> listEntryType = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            entryType = new EntryType( );
-            entryType.setId( daoUtil.getInt( 1 ) );
-            entryType.setTitleI18nKey( daoUtil.getString( 2 ) );
-            entryType.setClassName( daoUtil.getString( 3 ) );
-            entryType.setTemplateCreate( daoUtil.getString( 4 ) );
-            entryType.setTemplateModify( daoUtil.getString( 5 ) );
-            listEntryType.add( entryType );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                EntryType entryType = new EntryType( );
+                entryType.setId( daoUtil.getInt( 1 ) );
+                entryType.setTitleI18nKey( daoUtil.getString( 2 ) );
+                entryType.setClassName( daoUtil.getString( 3 ) );
+                entryType.setTemplateCreate( daoUtil.getString( 4 ) );
+                entryType.setTemplateModify( daoUtil.getString( 5 ) );
+                listEntryType.add( entryType );
+            }
+
+        }
 
         return listEntryType;
     }

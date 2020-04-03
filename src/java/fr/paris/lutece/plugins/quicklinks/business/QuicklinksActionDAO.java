@@ -48,34 +48,34 @@ public class QuicklinksActionDAO implements IQuicklinksActionDAO
             + " FROM quicklinks_action a WHERE a.quicklinks_state = ? ";
 
     /**
-     * Load the list of actions for a all {@link Quicklinks} by {@link Quicklinks} state
+     * Load the list of actions for a all {@link Quicklinks} by {@link Quicklinks}
+     * state
      * 
-     * @param bIsEnabled
-     *            true if {@link Quicklinks} is enabled
-     * @param plugin
-     *            the plugin
+     * @param bIsEnabled true if {@link Quicklinks} is enabled
+     * @param plugin     the plugin
      * @return The Collection of actions
      */
     public Collection<QuicklinksAction> selectActionsByQuicklinksState( boolean bIsEnabled, Plugin plugin )
     {
-        Collection<QuicklinksAction> listActions = new ArrayList<QuicklinksAction>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS, plugin );
-        daoUtil.setBoolean( 1, bIsEnabled );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        Collection<QuicklinksAction> listActions = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIONS, plugin ) )
         {
-            QuicklinksAction action = new QuicklinksAction( );
-            action.setNameKey( daoUtil.getString( 1 ) );
-            action.setDescriptionKey( daoUtil.getString( 2 ) );
-            action.setUrl( daoUtil.getString( 3 ) );
-            action.setIconUrl( daoUtil.getString( 4 ) );
-            action.setPermission( daoUtil.getString( 5 ) );
-            action.setQuicklinksState( daoUtil.getInt( 6 ) );
-            listActions.add( action );
-        }
+            daoUtil.setBoolean( 1, bIsEnabled );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                QuicklinksAction action = new QuicklinksAction( );
+                action.setNameKey( daoUtil.getString( 1 ) );
+                action.setDescriptionKey( daoUtil.getString( 2 ) );
+                action.setUrl( daoUtil.getString( 3 ) );
+                action.setIconUrl( daoUtil.getString( 4 ) );
+                action.setPermission( daoUtil.getString( 5 ) );
+                action.setQuicklinksState( daoUtil.getInt( 6 ) );
+                listActions.add( action );
+            }
+
+        }
 
         return listActions;
     }

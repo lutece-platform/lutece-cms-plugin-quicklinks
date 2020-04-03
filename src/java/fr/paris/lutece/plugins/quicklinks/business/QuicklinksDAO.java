@@ -72,54 +72,48 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     /**
      * Calculate a new primary key to add a new {@link Quicklinks}
      * 
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param plugin The {@link Plugin} using this data access service
      * @return The new key.
      */
     public int newPrimaryKey( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.executeQuery( );
-
-        int nKey;
-
-        if ( !daoUtil.next( ) )
+        int nKey = 1;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
     /**
      * Insert a new record in the table.
      * 
-     * @param quicklinks
-     *            The Instance of the object {@link Quicklinks}
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param quicklinks The Instance of the object {@link Quicklinks}
+     * @param plugin     The {@link Plugin} using this data access service
      * @return The new {@link Quicklinks}
      */
     public synchronized Quicklinks insert( Quicklinks quicklinks, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        quicklinks.setId( newPrimaryKey( plugin ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            quicklinks.setId( newPrimaryKey( plugin ) );
 
-        daoUtil.setInt( 1, quicklinks.getId( ) );
-        daoUtil.setString( 2, quicklinks.getTitle( ) );
-        daoUtil.setInt( 3, quicklinks.getType( ).getValue( ) );
-        daoUtil.setString( 4, quicklinks.getRoleKey( ) );
-        daoUtil.setString( 5, quicklinks.getWorkgroup( ) );
-        daoUtil.setBoolean( 6, quicklinks.isEnabled( ) );
-        daoUtil.setString( 7, quicklinks.getCssStyle( ) );
+            daoUtil.setInt( 1, quicklinks.getId( ) );
+            daoUtil.setString( 2, quicklinks.getTitle( ) );
+            daoUtil.setInt( 3, quicklinks.getType( ).getValue( ) );
+            daoUtil.setString( 4, quicklinks.getRoleKey( ) );
+            daoUtil.setString( 5, quicklinks.getWorkgroup( ) );
+            daoUtil.setBoolean( 6, quicklinks.isEnabled( ) );
+            daoUtil.setString( 7, quicklinks.getCssStyle( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
         return quicklinks;
     }
@@ -127,75 +121,70 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     /**
      * Delete the {@link Quicklinks} specified by identifier
      * 
-     * @param nIdQuicklinks
-     *            The identifier
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param nIdQuicklinks The identifier
+     * @param plugin        The {@link Plugin} using this data access service
      */
     public void delete( int nIdQuicklinks, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdQuicklinks );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdQuicklinks );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Update The {@link Quicklinks}
      * 
-     * @param quicklinks
-     *            The {@link Quicklinks} to update
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param quicklinks The {@link Quicklinks} to update
+     * @param plugin     The {@link Plugin} using this data access service
      */
     public void store( Quicklinks quicklinks, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
+            int nParam = 1;
+            daoUtil.setString( nParam++, quicklinks.getTitle( ) );
+            daoUtil.setInt( nParam++, quicklinks.getType( ).getValue( ) );
+            daoUtil.setString( nParam++, quicklinks.getRoleKey( ) );
+            daoUtil.setString( nParam++, quicklinks.getWorkgroup( ) );
+            daoUtil.setBoolean( nParam++, quicklinks.isEnabled( ) );
+            daoUtil.setString( nParam++, quicklinks.getCssStyle( ) );
 
-        int nParam = 1;
-        daoUtil.setString( nParam++, quicklinks.getTitle( ) );
-        daoUtil.setInt( nParam++, quicklinks.getType( ).getValue( ) );
-        daoUtil.setString( nParam++, quicklinks.getRoleKey( ) );
-        daoUtil.setString( nParam++, quicklinks.getWorkgroup( ) );
-        daoUtil.setBoolean( nParam++, quicklinks.isEnabled( ) );
-        daoUtil.setString( nParam++, quicklinks.getCssStyle( ) );
-
-        daoUtil.setInt( nParam++, quicklinks.getId( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.setInt( nParam++, quicklinks.getId( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Load the Quicklinks specified by Identifier
      * 
-     * @param nIdQuicklinks
-     *            The identifier
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param nIdQuicklinks The identifier
+     * @param plugin        The {@link Plugin} using this data access service
      * @return The {@link Quicklinks}
      */
     public Quicklinks load( int nIdQuicklinks, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
-        daoUtil.setInt( 1, nIdQuicklinks );
-        daoUtil.executeQuery( );
-
         Quicklinks quicklinks = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            quicklinks = new Quicklinks( );
-            quicklinks.setId( daoUtil.getInt( 1 ) );
-            quicklinks.setTitle( daoUtil.getString( 2 ) );
-            quicklinks.setType( QuicklinksType.getByValue( daoUtil.getInt( 3 ) ) );
-            quicklinks.setRoleKey( daoUtil.getString( 4 ) );
-            quicklinks.setWorkgroup( daoUtil.getString( 5 ) );
-            quicklinks.setEnabled( daoUtil.getBoolean( 6 ) );
-            quicklinks.setCssStyle( daoUtil.getString( 7 ) );
-        }
+            daoUtil.setInt( 1, nIdQuicklinks );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                quicklinks = new Quicklinks( );
+                quicklinks.setId( daoUtil.getInt( 1 ) );
+                quicklinks.setTitle( daoUtil.getString( 2 ) );
+                quicklinks.setType( QuicklinksType.getByValue( daoUtil.getInt( 3 ) ) );
+                quicklinks.setRoleKey( daoUtil.getString( 4 ) );
+                quicklinks.setWorkgroup( daoUtil.getString( 5 ) );
+                quicklinks.setEnabled( daoUtil.getBoolean( 6 ) );
+                quicklinks.setCssStyle( daoUtil.getString( 7 ) );
+            }
+
+        }
 
         return quicklinks;
     }
@@ -203,31 +192,31 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     /**
      * Find All {@link Quicklinks}
      * 
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param plugin The {@link Plugin} using this data access service
      * @return A {@link Collection} of {@link Quicklinks}
      */
     public Collection<Quicklinks> findAll( Plugin plugin )
     {
-        Collection<Quicklinks> list = new ArrayList<Quicklinks>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        Collection<Quicklinks> list = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
-            Quicklinks quicklinks = null;
-            quicklinks = new Quicklinks( );
-            quicklinks.setId( daoUtil.getInt( 1 ) );
-            quicklinks.setTitle( daoUtil.getString( 2 ) );
-            quicklinks.setType( QuicklinksType.getByValue( daoUtil.getInt( 3 ) ) );
-            quicklinks.setRoleKey( daoUtil.getString( 4 ) );
-            quicklinks.setWorkgroup( daoUtil.getString( 5 ) );
-            quicklinks.setEnabled( daoUtil.getBoolean( 6 ) );
-            quicklinks.setCssStyle( daoUtil.getString( 7 ) );
-            list.add( quicklinks );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                Quicklinks quicklinks = null;
+                quicklinks = new Quicklinks( );
+                quicklinks.setId( daoUtil.getInt( 1 ) );
+                quicklinks.setTitle( daoUtil.getString( 2 ) );
+                quicklinks.setType( QuicklinksType.getByValue( daoUtil.getInt( 3 ) ) );
+                quicklinks.setRoleKey( daoUtil.getString( 4 ) );
+                quicklinks.setWorkgroup( daoUtil.getString( 5 ) );
+                quicklinks.setEnabled( daoUtil.getBoolean( 6 ) );
+                quicklinks.setCssStyle( daoUtil.getString( 7 ) );
+                list.add( quicklinks );
+            }
+
+        }
 
         return list;
     }
@@ -235,33 +224,33 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     /**
      * Find all {@link Quicklinks} corresponding to {@link QuicklinksFilter}
      * 
-     * @param quickLinksFilter
-     *            The {@link QuicklinksFilter}
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param quickLinksFilter The {@link QuicklinksFilter}
+     * @param plugin           The {@link Plugin} using this data access service
      * @return A {@link Collection} of {@link Quicklinks}
      */
     public Collection<Quicklinks> findbyFilter( QuicklinksFilter quickLinksFilter, Plugin plugin )
     {
         Collection<Quicklinks> listQuicklinks = new ArrayList<Quicklinks>( );
-        DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER_SELECT, quickLinksFilter, plugin );
-        daoUtil.executeQuery( );
 
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER_SELECT, quickLinksFilter, plugin ) )
         {
-            Quicklinks quicklinks = null;
-            quicklinks = new Quicklinks( );
-            quicklinks.setId( daoUtil.getInt( 1 ) );
-            quicklinks.setTitle( daoUtil.getString( 2 ) );
-            quicklinks.setType( QuicklinksType.getByValue( daoUtil.getInt( 3 ) ) );
-            quicklinks.setRoleKey( daoUtil.getString( 4 ) );
-            quicklinks.setWorkgroup( daoUtil.getString( 5 ) );
-            quicklinks.setEnabled( daoUtil.getBoolean( 6 ) );
-            quicklinks.setCssStyle( daoUtil.getString( 7 ) );
-            listQuicklinks.add( quicklinks );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                Quicklinks quicklinks = null;
+                quicklinks = new Quicklinks( );
+                quicklinks.setId( daoUtil.getInt( 1 ) );
+                quicklinks.setTitle( daoUtil.getString( 2 ) );
+                quicklinks.setType( QuicklinksType.getByValue( daoUtil.getInt( 3 ) ) );
+                quicklinks.setRoleKey( daoUtil.getString( 4 ) );
+                quicklinks.setWorkgroup( daoUtil.getString( 5 ) );
+                quicklinks.setEnabled( daoUtil.getBoolean( 6 ) );
+                quicklinks.setCssStyle( daoUtil.getString( 7 ) );
+                listQuicklinks.add( quicklinks );
+            }
+
+        }
 
         return listQuicklinks;
     }
@@ -269,10 +258,8 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     /**
      * Return a DAO initialized with the specified filter
      * 
-     * @param strQuerySelect
-     *            the query
-     * @param filter
-     *            the {@link QuicklinksFilter} object
+     * @param strQuerySelect the query
+     * @param filter         the {@link QuicklinksFilter} object
      * @return the DaoUtil
      */
     private DAOUtil getDaoFromFilter( String strQuerySelect, QuicklinksFilter filter, Plugin plugin )
@@ -332,7 +319,8 @@ public final class QuicklinksDAO implements IQuicklinksDAO
         if ( filter.getType( ) != null )
         {
             daoUtil.setInt( nIndex, filter.getType( ).getValue( ) );
-            AppLogService.debug( "Param" + nIndex + " (getType) = " + filter.getType( ) + "(value int : " + filter.getType( ).getValue( ) + ")" );
+            AppLogService.debug( "Param" + nIndex + " (getType) = " + filter.getType( ) + "(value int : "
+                    + filter.getType( ).getValue( ) + ")" );
             nIndex++;
         }
 
@@ -356,12 +344,10 @@ public final class QuicklinksDAO implements IQuicklinksDAO
     /**
      * Appends the filter to the buffer
      * 
-     * @param buffer
-     *            the buffer
-     * @param strFilterName
-     *            the filter
-     * @param strCondition
-     *            {@link #SQL_QUERY_SELECT_BY_FILTER_AND} or {@link #SQL_QUERY_SELECT_BY_FILTER_OR}
+     * @param buffer        the buffer
+     * @param strFilterName the filter
+     * @param strCondition  {@link #SQL_QUERY_SELECT_BY_FILTER_AND} or
+     *                      {@link #SQL_QUERY_SELECT_BY_FILTER_OR}
      */
     private void appendFilter( StringBuilder buffer, String strFilterName, String strCondition )
     {

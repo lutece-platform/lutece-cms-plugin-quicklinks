@@ -54,10 +54,8 @@ public class EntryUrlDAO implements IEntrySpecificDAO
     /**
      * Load the data of the entry type from the table
      *
-     * @param entry
-     *            The empty entry object
-     * @param plugin
-     *            the plugin
+     * @param entry  The empty entry object
+     * @param plugin the plugin
      * @return the instance of the EntryType
      */
     public IEntry load( IEntry entry, Plugin plugin )
@@ -78,23 +76,24 @@ public class EntryUrlDAO implements IEntrySpecificDAO
             return null;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
-        daoUtil.setInt( 1, entryUrl.getId( ) );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
-            entryUrl.setTitle( daoUtil.getString( 1 ) );
-            entryUrl.setTarget( daoUtil.getString( 2 ) );
-            entryUrl.setDescription( daoUtil.getString( 3 ) );
-            entryUrl.setUrl( daoUtil.getString( 4 ) );
-            entryUrl.setImage( daoUtil.getBytes( 5 ) );
-            entryUrl.setImageMimeType( daoUtil.getString( 6 ) );
-            entryUrl.setEntryUrlDisplayProperties( EntryUrlDisplayProperties.getByValue( daoUtil.getInt( 7 ) ) );
-            entryUrl.setEntryUrlLinkProperties( EntryUrlLinkProperties.getByValue( daoUtil.getInt( 8 ) ) );
-        }
+            daoUtil.setInt( 1, entryUrl.getId( ) );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                entryUrl.setTitle( daoUtil.getString( 1 ) );
+                entryUrl.setTarget( daoUtil.getString( 2 ) );
+                entryUrl.setDescription( daoUtil.getString( 3 ) );
+                entryUrl.setUrl( daoUtil.getString( 4 ) );
+                entryUrl.setImage( daoUtil.getBytes( 5 ) );
+                entryUrl.setImageMimeType( daoUtil.getString( 6 ) );
+                entryUrl.setEntryUrlDisplayProperties( EntryUrlDisplayProperties.getByValue( daoUtil.getInt( 7 ) ) );
+                entryUrl.setEntryUrlLinkProperties( EntryUrlLinkProperties.getByValue( daoUtil.getInt( 8 ) ) );
+            }
+
+        }
 
         return entryUrl;
     }
@@ -102,27 +101,24 @@ public class EntryUrlDAO implements IEntrySpecificDAO
     /**
      * Deletes the {@link Entry} whose identifier is specified in parameter
      *
-     * @param nEntryId
-     *            The identifier of the {@link Entry}
-     * @param plugin
-     *            The {@link Plugin}
+     * @param nEntryId The identifier of the {@link Entry}
+     * @param plugin   The {@link Plugin}
      */
     public void delete( int entryId, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, entryId );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, entryId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Insert the Entry
      *
-     * @param entry
-     *            The {@link Entry} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param entry  The {@link Entry} object
+     * @param plugin The {@link Plugin}
      * @return The {@link Entry}
      */
     public IEntry insert( IEntry entry, Plugin plugin )
@@ -143,20 +139,21 @@ public class EntryUrlDAO implements IEntrySpecificDAO
             return null;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        int nParam = 1;
-        daoUtil.setInt( nParam++, entryUrl.getId( ) );
-        daoUtil.setString( nParam++, entryUrl.getTitle( ) );
-        daoUtil.setString( nParam++, entryUrl.getTarget( ) );
-        daoUtil.setString( nParam++, entryUrl.getDescription( ) );
-        daoUtil.setString( nParam++, entryUrl.getUrl( ) );
-        daoUtil.setBytes( nParam++, entryUrl.getImage( ) );
-        daoUtil.setString( nParam++, entryUrl.getImageMimeType( ) );
-        daoUtil.setInt( nParam++, entryUrl.getEntryUrlDisplayProperties( ).getValue( ) );
-        daoUtil.setInt( nParam++, entryUrl.getEntryUrlLinkProperties( ).getValue( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            int nParam = 1;
+            daoUtil.setInt( nParam++, entryUrl.getId( ) );
+            daoUtil.setString( nParam++, entryUrl.getTitle( ) );
+            daoUtil.setString( nParam++, entryUrl.getTarget( ) );
+            daoUtil.setString( nParam++, entryUrl.getDescription( ) );
+            daoUtil.setString( nParam++, entryUrl.getUrl( ) );
+            daoUtil.setBytes( nParam++, entryUrl.getImage( ) );
+            daoUtil.setString( nParam++, entryUrl.getImageMimeType( ) );
+            daoUtil.setInt( nParam++, entryUrl.getEntryUrlDisplayProperties( ).getValue( ) );
+            daoUtil.setInt( nParam++, entryUrl.getEntryUrlLinkProperties( ).getValue( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
         return entry;
     }
@@ -164,10 +161,8 @@ public class EntryUrlDAO implements IEntrySpecificDAO
     /**
      * Update the {@link Entry}
      *
-     * @param entry
-     *            The {@link Entry} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param entry  The {@link Entry} object
+     * @param plugin The {@link Plugin}
      */
     public void store( IEntry entry, Plugin plugin )
     {
@@ -187,20 +182,21 @@ public class EntryUrlDAO implements IEntrySpecificDAO
             return;
         }
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
 
-        int nParam = 1;
-        daoUtil.setString( nParam++, entryUrl.getTitle( ) );
-        daoUtil.setString( nParam++, entryUrl.getTarget( ) );
-        daoUtil.setString( nParam++, entryUrl.getDescription( ) );
-        daoUtil.setString( nParam++, entryUrl.getUrl( ) );
-        daoUtil.setBytes( nParam++, entryUrl.getImage( ) );
-        daoUtil.setString( nParam++, entryUrl.getImageMimeType( ) );
-        daoUtil.setInt( nParam++, entryUrl.getEntryUrlDisplayProperties( ).getValue( ) );
-        daoUtil.setInt( nParam++, entryUrl.getEntryUrlLinkProperties( ).getValue( ) );
+            int nParam = 1;
+            daoUtil.setString( nParam++, entryUrl.getTitle( ) );
+            daoUtil.setString( nParam++, entryUrl.getTarget( ) );
+            daoUtil.setString( nParam++, entryUrl.getDescription( ) );
+            daoUtil.setString( nParam++, entryUrl.getUrl( ) );
+            daoUtil.setBytes( nParam++, entryUrl.getImage( ) );
+            daoUtil.setString( nParam++, entryUrl.getImageMimeType( ) );
+            daoUtil.setInt( nParam++, entryUrl.getEntryUrlDisplayProperties( ).getValue( ) );
+            daoUtil.setInt( nParam++, entryUrl.getEntryUrlLinkProperties( ).getValue( ) );
 
-        daoUtil.setInt( nParam++, entryUrl.getId( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.setInt( nParam++, entryUrl.getId( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 }

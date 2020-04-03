@@ -51,7 +51,8 @@ public class EntrySelectOptionDAO implements IEntrySelectOptionDAO
             + "FROM quicklinks_entry_select_option WHERE id_option = ? AND id_entry = ?";
     private static final String SQL_QUERY_INSERT = " INSERT INTO quicklinks_entry_select_option ( id_entry, "
             + "id_option, option_title, option_url,id_order ) VALUES ( ?, ?, ?, ?, ? )";
-    private static final String SQL_QUERY_DELETE = " DELETE FROM quicklinks_entry_select_option " + "WHERE id_option = ? AND id_entry = ? ";
+    private static final String SQL_QUERY_DELETE = " DELETE FROM quicklinks_entry_select_option "
+            + "WHERE id_option = ? AND id_entry = ? ";
     private static final String SQL_QUERY_UPDATE = " UPDATE quicklinks_entry_select_option SET option_title = ?, "
             + "option_url = ?, id_order = ? WHERE id_option = ? AND id_entry = ? ";
     private static final String SQL_QUERY_FIND_ALL = "SELECT id_entry, id_option, option_title, option_url, id_order "
@@ -62,108 +63,97 @@ public class EntrySelectOptionDAO implements IEntrySelectOptionDAO
     /**
      * Calculate a new primary key to add a new {@link Entry}
      * 
-     * @param plugin
-     *            The {@link Plugin} using this data access service
+     * @param plugin The {@link Plugin} using this data access service
      * @return The new key.
      */
     public int newPrimaryKey( int nIdEntry, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.setInt( 1, nIdEntry );
-        daoUtil.executeQuery( );
-
-        int nKey;
-
-        if ( !daoUtil.next( ) )
+        int nKey = 1;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.setInt( 1, nIdEntry );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                // if the table is empty
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
     /**
      * Load the data of the {@link EntrySelectOption} from the table
      *
-     * @param nId
-     *            The identifier of the entry select option
-     * @param nIdEntry
-     *            The identifier of the {@link Entry}
-     * @param plugin
-     *            the plugin
+     * @param nId      The identifier of the entry select option
+     * @param nIdEntry The identifier of the {@link Entry}
+     * @param plugin   the plugin
      * @return the instance of the {@link EntrySelectOption}
      */
     public EntrySelectOption load( int nId, int nIdEntry, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
-        daoUtil.setInt( 1, nId );
-        daoUtil.setInt( 2, nIdEntry );
-        daoUtil.executeQuery( );
-
         EntrySelectOption entrySelectOption = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
-            entrySelectOption = new EntrySelectOption( );
-            entrySelectOption.setId( nId );
-            entrySelectOption.setIdEntry( nIdEntry );
-            entrySelectOption.setTitle( daoUtil.getString( 1 ) );
-            entrySelectOption.setUrl( daoUtil.getString( 2 ) );
-            entrySelectOption.setIdOrder( daoUtil.getInt( 3 ) );
-        }
+            daoUtil.setInt( 1, nId );
+            daoUtil.setInt( 2, nIdEntry );
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                entrySelectOption = new EntrySelectOption( );
+                entrySelectOption.setId( nId );
+                entrySelectOption.setIdEntry( nIdEntry );
+                entrySelectOption.setTitle( daoUtil.getString( 1 ) );
+                entrySelectOption.setUrl( daoUtil.getString( 2 ) );
+                entrySelectOption.setIdOrder( daoUtil.getInt( 3 ) );
+            }
+        }
 
         return entrySelectOption;
     }
 
     /**
-     * Delete the {@link EntrySelectOption} whose identifier is specified in parameter
+     * Delete the {@link EntrySelectOption} whose identifier is specified in
+     * parameter
      *
-     * @param nId
-     *            The identifier of the {@link EntrySelectOption}
-     * @param nIdEntry
-     *            The identifier of the {@link Entry}
-     * @param plugin
-     *            The {@link Plugin}
+     * @param nId      The identifier of the {@link EntrySelectOption}
+     * @param nIdEntry The identifier of the {@link Entry}
+     * @param plugin   The {@link Plugin}
      */
     public void delete( int nId, int nIdEntry, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nId );
-        daoUtil.setInt( 2, nIdEntry );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nId );
+            daoUtil.setInt( 2, nIdEntry );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Insert the {@link EntrySelectOption}
      *
-     * @param option
-     *            The {@link EntrySelectOption} to insert
-     * @param plugin
-     *            The {@link Plugin}
+     * @param option The {@link EntrySelectOption} to insert
+     * @param plugin The {@link Plugin}
      * @return The {@link EntrySelectOption}
      */
     public EntrySelectOption insert( EntrySelectOption entrySelectOption, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        int nParam = 1;
-        entrySelectOption.setId( newPrimaryKey( entrySelectOption.getIdEntry( ), plugin ) );
-        daoUtil.setInt( nParam++, entrySelectOption.getIdEntry( ) );
-        daoUtil.setInt( nParam++, entrySelectOption.getId( ) );
-        daoUtil.setString( nParam++, entrySelectOption.getTitle( ) );
-        daoUtil.setString( nParam++, entrySelectOption.getUrl( ) );
-        daoUtil.setInt( nParam++, entrySelectOption.getIdOrder( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            int nParam = 1;
+            entrySelectOption.setId( newPrimaryKey( entrySelectOption.getIdEntry( ), plugin ) );
+            daoUtil.setInt( nParam++, entrySelectOption.getIdEntry( ) );
+            daoUtil.setInt( nParam++, entrySelectOption.getId( ) );
+            daoUtil.setString( nParam++, entrySelectOption.getTitle( ) );
+            daoUtil.setString( nParam++, entrySelectOption.getUrl( ) );
+            daoUtil.setInt( nParam++, entrySelectOption.getIdOrder( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
         return entrySelectOption;
     }
@@ -171,52 +161,49 @@ public class EntrySelectOptionDAO implements IEntrySelectOptionDAO
     /**
      * Update the {@link EntrySelectOption}
      *
-     * @param option
-     *            The {@link EntrySelectOption} object
-     * @param plugin
-     *            The {@link Plugin}
+     * @param option The {@link EntrySelectOption} object
+     * @param plugin The {@link Plugin}
      */
     public void store( EntrySelectOption entrySelectOption, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
+            int nParam = 1;
+            daoUtil.setString( nParam++, entrySelectOption.getTitle( ) );
+            daoUtil.setString( nParam++, entrySelectOption.getUrl( ) );
+            daoUtil.setInt( nParam++, entrySelectOption.getIdOrder( ) );
 
-        int nParam = 1;
-        daoUtil.setString( nParam++, entrySelectOption.getTitle( ) );
-        daoUtil.setString( nParam++, entrySelectOption.getUrl( ) );
-        daoUtil.setInt( nParam++, entrySelectOption.getIdOrder( ) );
-
-        daoUtil.setInt( nParam++, entrySelectOption.getId( ) );
-        daoUtil.setInt( nParam++, entrySelectOption.getIdEntry( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.setInt( nParam++, entrySelectOption.getId( ) );
+            daoUtil.setInt( nParam++, entrySelectOption.getIdEntry( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
      * Get a complete list of {@link EntrySelectOption}
      * 
-     * @param plugin
-     *            The {@link Plugin}
+     * @param plugin The {@link Plugin}
      * @return A {@link Collection} of {@link EntrySelectOption}
      */
     public Collection<EntrySelectOption> select( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin );
-        daoUtil.executeQuery( );
-
-        Collection<EntrySelectOption> listEntrySelectOption = new ArrayList<EntrySelectOption>( );
-
-        while ( daoUtil.next( ) )
+        Collection<EntrySelectOption> listEntrySelectOption = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin ) )
         {
-            EntrySelectOption entrySelectOption = new EntrySelectOption( );
-            entrySelectOption.setIdEntry( daoUtil.getInt( 1 ) );
-            entrySelectOption.setId( daoUtil.getInt( 2 ) );
-            entrySelectOption.setTitle( daoUtil.getString( 3 ) );
-            entrySelectOption.setUrl( daoUtil.getString( 4 ) );
-            entrySelectOption.setIdOrder( daoUtil.getInt( 5 ) );
-            listEntrySelectOption.add( entrySelectOption );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                EntrySelectOption entrySelectOption = new EntrySelectOption( );
+                entrySelectOption.setIdEntry( daoUtil.getInt( 1 ) );
+                entrySelectOption.setId( daoUtil.getInt( 2 ) );
+                entrySelectOption.setTitle( daoUtil.getString( 3 ) );
+                entrySelectOption.setUrl( daoUtil.getString( 4 ) );
+                entrySelectOption.setIdOrder( daoUtil.getInt( 5 ) );
+                listEntrySelectOption.add( entrySelectOption );
+            }
+
+        }
 
         return listEntrySelectOption;
     }
@@ -224,33 +211,29 @@ public class EntrySelectOptionDAO implements IEntrySelectOptionDAO
     /**
      * Get a list of {@link EntrySelectOption} specified by entry id
      * 
-     * @param nIdEntry
-     *            The entry id
-     * @param plugin
-     *            The {@link Plugin}
+     * @param nIdEntry The entry id
+     * @param plugin   The {@link Plugin}
      * @return A {@link Collection} of {@link EntrySelectOption}
      */
     public Collection<EntrySelectOption> selectByEntry( int nIdEntry, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_ENTRY_ID, plugin );
-        daoUtil.setInt( 1, nIdEntry );
-        daoUtil.executeQuery( );
-
-        Collection<EntrySelectOption> listEntrySelectOption = new ArrayList<EntrySelectOption>( );
-
-        while ( daoUtil.next( ) )
+        Collection<EntrySelectOption> listEntrySelectOption = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_ENTRY_ID, plugin ) )
         {
-            EntrySelectOption entrySelectOption = new EntrySelectOption( );
-            entrySelectOption.setId( daoUtil.getInt( 1 ) );
-            entrySelectOption.setIdEntry( nIdEntry );
-            entrySelectOption.setTitle( daoUtil.getString( 2 ) );
-            entrySelectOption.setUrl( daoUtil.getString( 3 ) );
-            entrySelectOption.setIdOrder( daoUtil.getInt( 4 ) );
-            listEntrySelectOption.add( entrySelectOption );
+            daoUtil.setInt( 1, nIdEntry );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                EntrySelectOption entrySelectOption = new EntrySelectOption( );
+                entrySelectOption.setId( daoUtil.getInt( 1 ) );
+                entrySelectOption.setIdEntry( nIdEntry );
+                entrySelectOption.setTitle( daoUtil.getString( 2 ) );
+                entrySelectOption.setUrl( daoUtil.getString( 3 ) );
+                entrySelectOption.setIdOrder( daoUtil.getInt( 4 ) );
+                listEntrySelectOption.add( entrySelectOption );
+            }
         }
-
-        daoUtil.free( );
-
         return listEntrySelectOption;
     }
 }
