@@ -1,4 +1,4 @@
 <@formGroup labelFor="quicklinks_id" labelKey='#i18n{quicklinks.list_quicklinks.labelQuicklinks}' mandatory=true>
-<#assign quicklinksDefault><#if quicklinks_id??>quicklinks_id?string<#else>-1</#if></#assign>
+<#assign quicklinksDefault><#if quicklinks_id??>${quicklinks_id?string}<#else>-1</#if></#assign>
 <@select id='quicklinks_id' name='quicklinks_id' default_value=quicklinksDefault items=quicklinks_list />
 </@formGroup>
