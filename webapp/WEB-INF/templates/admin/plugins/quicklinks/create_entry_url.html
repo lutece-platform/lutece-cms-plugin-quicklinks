@@ -20,6 +20,10 @@
 				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelDescription}' labelFor='description'>
 					<@input name='description' id='description' maxlength=255 value=entry.description! />
 				</@formGroup>
+				<@formGroup>
+					<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_url.buttonLabelModify}' />
+					<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
+				</@formGroup>
 			</@columns>
 			<@columns sm=3>
 				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelImage}' labelFor='image'>
@@ -33,7 +37,12 @@
 					<@radioButton name='display_properties' id='display_properties_${item.code}' labelKey='#i18n{${item.name}}' orientation='' value='${item.code}' checked=isTargetChecked?boolean />
 				</#list>
 				</@formGroup>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelLinkProperties}' labelFor='link_properties' mandatory=true>
+			</@columns>
+			<@columns sm=3>
+			    <@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' labelFor='blankTarget' mandatory=false>
+					<@checkBox name='target' id='blankTarget' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' value='_blank' />
+				</@formGroup>
+                <@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelLinkProperties}' labelFor='link_properties' mandatory=true>
 				<#list link_properties_list as item>
 					<#assign isTargetChecked='false' />
 					<#if item.code=link_properties_default_value?string ><#assign isTargetChecked='true' /></#if> 
@@ -41,54 +50,7 @@
 				</#list>
 				</@formGroup>
 			</@columns>
-			<@columns sm=2>
-			<@fieldSet legend='#i18n{quicklinks.modify_entry_url.labelTarget}'>
-				<#assign targetChecked=false />
-				<#assign isTargetChecked><#if target_default_value='_blank'>true<#else>false</#if></#assign>
-				<@radioButton name='target' id='blank' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' orientation='' value='_blank' checked=isTargetChecked?boolean />
-				<#assign targetChecked = true />
-				<#assign isTargetChecked><#if target_default_value='_self'>true<#else>false</#if></#assign>
-				<@radioButton name='target' id='self' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.self}' orientation='' value='_self' checked=isTargetChecked?boolean />
-				<#assign targetChecked = true />
-				<#assign isTargetChecked><#if target_default_value='_parent'>true<#else>false</#if></#assign>
-				<@radioButton name='target' id='parent' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.parent}' orientation='' value='_parent' checked=isTargetChecked?boolean />
-				<#assign targetChecked = true />
-				<#assign isTargetChecked><#if target_default_value='_top'>true<#else>false</#if></#assign>
-				<@radioButton name='target' id='top' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.top}' orientation='' value='_top' checked=isTargetChecked?boolean />
-				<#assign targetChecked = true />
-				<@radioButton name='target' id='other' labelKey='#i18n{quicklinks.modify_entry_url.target.other}' orientation='' value='' checked=!targetChecked />
-				<#assign targetDefault><#if !targetChecked>${target_default_value}</#if></#assign>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' hideLabel=['all'] >
-					<@input name='target_framename' id='target_framename' placeholder='#i18n{quicklinks.modify_entry_url.labelTarget}' maxlength=255 value=targetDefault />
-				</@formGroup>
-			</@fieldSet>
-			</@columns>
-			<@columns sm=3 class='d-flex align-items-center justify-content-around'>
-				<@formGroup>
-					<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_url.buttonLabelModify}' />
-					<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
-				</@formGroup>
-			</@columns>
 			</@row>
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
-<script>
-document.addEventListener( "DOMContentLoaded", function(){
-	const tgFrame = document.getElementById('target_framename'), radioList = document.querySelectorAll('.form-radio-target')
-	if( tgFrame.value =="" ){
-		tgFrame.setAttribute( 'disabled', 'disabled' )
-	}
-	
-	radioList.forEach( element => {
-		element.addEventListener( 'click', ( event ) => {
-			if( event.currentTarget.getAttribute('id' ) === 'other' ){
-				tgFrame.removeAttribute( 'disabled' )
-			} else {
-				tgFrame.value='';
-				tgFrame.setAttribute( 'disabled', 'disabled' )
-			}
-		})
-	})
-});
-</script>
