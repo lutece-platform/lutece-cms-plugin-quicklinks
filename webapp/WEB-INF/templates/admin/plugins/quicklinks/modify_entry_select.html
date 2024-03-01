@@ -8,40 +8,10 @@
 					<@formGroup labelKey='#i18n{quicklinks.modify_entry_select.labelTitle}' labelFor='title' mandatory=true>
 						<@input name='title' id='title' maxlength=255 value=entry.title! />
 					</@formGroup>
-					<@fieldSet legend='#i18n{quicklinks.modify_entry_url.labelTarget}'>
-						<#assign isBlank = false />
-						<#assign isSelf = false />
-						<#assign isTop = false />
-						<#assign isParent = false />
-						<#assign isOther = true />
-						<#switch entry.target>
-							<#case '_blank'>
-								<#assign isBlank = true />
-								<#assign isOther = false />
-								<#break>
-							<#case '_self'>
-								<#assign isSelf = true />
-								<#assign isOther = false />
-								<#break>
-							<#case '_parent'>
-								<#assign isParent = true />
-								<#assign isOther = false />
-								<#break>
-							<#case '_top'>
-								<#assign isTop = true />
-								<#assign isOther = false />
-								<#break>
-						</#switch>
-						<@radioButton name='target' id='blank' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' orientation='' value='_blank' checked=isBlank />
-						<@radioButton name='target' id='self' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.self}' orientation='' value='_self' checked=isSelf />
-						<@radioButton name='target' id='parent' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.parent}' orientation='' value='_parent' checked=isParent />
-						<@radioButton name='target' id='top' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.top}' orientation='' value='_top' checked=isTop />
-						<@radioButton name='target' id='other' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.other}' orientation='' value='' checked=isOther />
-						<#if isOther><#assign targetVal = entry.target /></#if>
-						<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' hideLabel=['all']>
-							<@input name='target' id='target_framename' placeholder='#i18n{quicklinks.modify_entry_url.labelTarget}' maxlength=255 value=targetVal! />
-						</@formGroup>
-					</@fieldSet>
+					<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' labelFor='blankTarget' rows=2 mandatory=false>
+						<#if entry.target?has_content && entry.target == '_blank'><#assign checked=true/><#else><#assign checked=false/></#if>
+						<@checkBox name='target' id='blankTarget' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' value='_blank' checked=checked />
+					</@formGroup>
 					<@formGroup>
 						<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_select.buttonLabelModify}' />
 						<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
@@ -105,22 +75,3 @@
 		</@row>
 	</@pageColumn>
 </@pageContainer>
-<script>
-document.addEventListener( "DOMContentLoaded", function(){
-	const tgFrame = document.getElementById('target_framename'), radioList = document.querySelectorAll('.form-radio-target')
-	if( tgFrame.value =="" ){
-		tgFrame.setAttribute( 'disabled', 'disabled' )
-	}
-	
-	radioList.forEach( element => {
-		element.addEventListener( 'click', ( event ) => {
-			if( event.currentTarget.getAttribute('id' ) === 'other' ){
-				tgFrame.removeAttribute( 'disabled' )
-			} else {
-				tgFrame.value='';
-				tgFrame.setAttribute( 'disabled', 'disabled' )
-			}
-		})
-	})
-});
-</script>

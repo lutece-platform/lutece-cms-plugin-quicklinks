@@ -8,26 +8,9 @@
 		<@formGroup labelKey='#i18n{quicklinks.create_entry_select.labelTitle}' labelFor='title' mandatory=true>
 			<@input name='title' id='title' maxlength=255 value='' />
 		</@formGroup>
-		<@fieldSet legend='#i18n{quicklinks.modify_entry_url.labelTarget}'>
-			<#assign targetChecked=false />
-			<#assign isTargetChecked><#if target_default_value='_blank'>true<#else>false</#if></#assign>
-			<@radioButton name='target' id='blank' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' orientation='' value='_blank' checked=isTargetChecked?boolean />
-			<#assign targetChecked = true />
-			<#assign isTargetChecked><#if target_default_value='_self'>true<#else>false</#if></#assign>
-			<@radioButton name='target' id='self' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.self}' orientation='' value='_self' checked=isTargetChecked?boolean />
-			<#assign targetChecked = true />
-			<#assign isTargetChecked><#if target_default_value='_parent'>true<#else>false</#if></#assign>
-			<@radioButton name='target' id='parent' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.parent}' orientation='' value='_parent' checked=isTargetChecked?boolean />
-			<#assign targetChecked = true />
-			<#assign isTargetChecked><#if target_default_value='_top'>true<#else>false</#if></#assign>
-			<@radioButton name='target' id='top' class='form-radio-target' labelKey='#i18n{quicklinks.modify_entry_url.target.top}' orientation='' value='_top' checked=isTargetChecked?boolean />
-			<#assign targetChecked = true />
-			<@radioButton name='target' id='other' labelKey='#i18n{quicklinks.modify_entry_url.target.other}' orientation='' value='' checked=!targetChecked />
-			<#assign targetDefault><#if !targetChecked>${target_default_value}</#if></#assign>
-			<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' hideLabel=['all'] >
-				<@input name='target_framename' id='target_framename' placeholder='#i18n{quicklinks.modify_entry_url.labelTarget}' maxlength=255 value=targetDefault />
-			</@formGroup>
-		</@fieldSet>
+		<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' labelFor='blankTarget' rows=2 mandatory=false>
+            <@checkBox name='target' id='blankTarget' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' value='_blank' />
+        </@formGroup>
 		<@formGroup>
 			<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.create_entry_select.buttonLabelCreate}' />
 			<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
@@ -35,19 +18,3 @@
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
-<script>
-document.addEventListener( "DOMContentLoaded", function(){
-	const tgFrame = document.getElementById('target_framename'), radioList = document.querySelectorAll('input[type="radio"]')
-	tgFrame.setAttribute( 'disabled', 'disabled' )
-	radioList.forEach( element => {
-		element.addEventListener( 'click', ( event ) => {
-			if( event.currentTarget.getAttribute('id' ) === 'other' ){
-				tgFrame.removeAttribute( 'disabled' )
-			} else {
-				tgFrame.value='';
-				tgFrame.setAttribute( 'disabled', 'disabled' )
-			}
-		})
-	})
-});
-</script>

@@ -61,13 +61,11 @@ public class EntryUrl extends Entry
     private static final String REGEX_ID = "^[\\d]+$";
     private static final int DISPLAY_PROPERTIES_DEFAULT_VALUE = 1;
     private static final int LINK_PROPERTIES_DEFAULT_VALUE = 1;
-    private static final String TARGET_DEFAULT_VALUE = "_blank";
 
     // Templates
     private static final String TEMPLATE_DISPLAY = "skin/plugins/quicklinks/entry_url.html";
 
     // Markers
-    private static final String MARK_TARGET_DEFAULT_VALUE = "target_default_value";
     private static final String MARK_DISPLAY_PROPERTIES_LIST = "display_properties_list";
     private static final String MARK_DISPLAY_PROPERTIES_DEFAULT_VALUE = "display_properties_default_value";
     private static final String MARK_LINK_PROPERTIES_LIST = "link_properties_list";
@@ -75,13 +73,11 @@ public class EntryUrl extends Entry
     private static final String MARK_ENTRY_URL = "entry_url";
 
     // Properties
-    private static final String PROPERTY_TARGET_DEFAULT_VALUE = "entryUrl.create.defaultValue.target";
     private static final String PROPERTY_DISPLAY_PROPERTIES_DEFAULT_VALUE = "entryUrl.create.defaultValue.displayProperties";
     private static final String PROPERTY_LINK_PROPERTIES_DEFAULT_VALUE = "entryUrl.create.defaultValue.linkProperties";
 
     // Parameters
     private static final String PARAMETER_TARGET = "target";
-    private static final String PARAMETER_TARGET_FRAMENAME = "target_framename";
     private static final String PARAMETER_DESCRIPTION = "description";
     private static final String PARAMETER_URL = "url";
     private static final String PARAMETER_UPDATE_IMAGE = "update_image";
@@ -269,7 +265,6 @@ public class EntryUrl extends Entry
     public String setSpecificParameters( HttpServletRequest request )
     {
         String strTarget = request.getParameter( PARAMETER_TARGET );
-        String strTargetFramename = request.getParameter( PARAMETER_TARGET_FRAMENAME );
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strUrl = request.getParameter( PARAMETER_URL );
         String strUpdateImage = request.getParameter( PARAMETER_UPDATE_IMAGE );
@@ -280,15 +275,10 @@ public class EntryUrl extends Entry
 
         boolean bUpdateImage = StringUtils.isNotEmpty( strUpdateImage );
 
-        // Check Target
-        if ( StringUtils.isEmpty( strTarget ) && StringUtils.isEmpty( strTargetFramename ) )
+        // Check target
+        if ( strTarget == null )
         {
-            return Messages.MANDATORY_FIELDS;
-        }
-
-        if ( strTarget.equals( EMPTY_STRING ) )
-        {
-            setTarget( strTargetFramename );
+            setTarget( EMPTY_STRING );
         }
         else
         {
@@ -346,7 +336,6 @@ public class EntryUrl extends Entry
 
         model.put( MARK_DISPLAY_PROPERTIES_LIST, EntryUrlDisplayProperties.getReferenceList( ) );
         model.put( MARK_LINK_PROPERTIES_LIST, EntryUrlLinkProperties.getReferenceList( ) );
-        model.put( MARK_TARGET_DEFAULT_VALUE, AppPropertiesService.getProperty( PROPERTY_TARGET_DEFAULT_VALUE, TARGET_DEFAULT_VALUE ) );
         model.put( MARK_DISPLAY_PROPERTIES_DEFAULT_VALUE, nDisplayPropertiesDefaultValue );
         model.put( MARK_LINK_PROPERTIES_DEFAULT_VALUE, nLinkPropertiesDefaultValue );
     }
