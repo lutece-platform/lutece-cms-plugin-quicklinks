@@ -68,4 +68,14 @@
             <portlet-modify-specific-form-template/>
         </portlet>
     </portlets>
+
+    <!-- Insert Services -->
+    <insert-services>
+        <insert-service>
+            <insert-service-id>INTERNAL_LINK_INSERT_SERVICE</insert-service-id>
+            <insert-service-name>quicklinks.insertService.name</insert-service-name>
+            <insert-service-bean-class>fr.paris.lutece.plugins.quicklinks.web.InternalLinkInsertServiceJspBean</insert-service-bean-class>
+            <insert-service-label>quicklinks.insertService.label</insert-service-label>
+        </insert-service>
+    </insert-services>
 </plug-in>

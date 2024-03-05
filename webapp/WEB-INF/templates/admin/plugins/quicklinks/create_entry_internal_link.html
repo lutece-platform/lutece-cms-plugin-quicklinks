@@ -37,7 +37,7 @@
 function linkservice(){
 	const showPreview = document.getElementById('show-preview') 
 	showPreview.innerHTML='';
-	fen=window.open("${base_url}/jsp/admin/insert/GetAvailableInsertServices.jsp?input=content&selected_text=quicklinks","#i18n{quicklinks.create_entry_internal_link.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, left=500, top=200, width=800, height=600");
+	fen=window.open("${base_url}/jsp/admin/insert/GetAvailableInsertServices.jsp?input=content&selected_text=quicklinks&mode=0","#i18n{quicklinks.create_entry_internal_link.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, left=500, top=200, width=800, height=600");
 	fen.focus();
 }
 
