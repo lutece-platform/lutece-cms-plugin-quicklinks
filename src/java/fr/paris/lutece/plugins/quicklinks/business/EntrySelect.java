@@ -58,7 +58,6 @@ public class EntrySelect extends Entry
 {
     private static final int DEFAULT_PAGINATOR_STYLES_PER_PAGE = 10;
     private static final String EMPTY_STRING = "";
-    private static final String TARGET_DEFAULT_VALUE = "_blank";
 
     // JSP URL
     private static final String JSP_URL_PREFIX = "jsp/admin/plugins/quicklinks/";
@@ -68,18 +67,13 @@ public class EntrySelect extends Entry
     private static final String TEMPLATE_DISPLAY = "skin/plugins/quicklinks/entry_select.html";
 
     // Markers
-    private static final String MARK_TARGET_DEFAULT_VALUE = "target_default_value";
     private static final String MARK_ENTRY_SELECT = "entry_select";
     private static final String MARK_OPTION_LIST = "option_list";
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
 
-    // Properties
-    private static final String PROPERTY_TARGET_DEFAULT_VALUE = "entrySelect.create.defaultValue.target";
-
     // Parameters
     private static final String PARAMETER_TARGET = "target";
-    private static final String PARAMETER_TARGET_FRAMENAME = "target_framename";
     private static final String PROPERTY_STYLES_PER_PAGE = "paginator.style.itemsPerPage";
 
     // Parameters
@@ -179,17 +173,10 @@ public class EntrySelect extends Entry
     public String setSpecificParameters( HttpServletRequest request )
     {
         String strTarget = request.getParameter( PARAMETER_TARGET );
-        String strTargetFramename = request.getParameter( PARAMETER_TARGET_FRAMENAME );
-
-        // Check Target
-        if ( ( strTarget == null ) || ( strTarget.equals( EMPTY_STRING ) && ( ( strTargetFramename == null ) || strTargetFramename.equals( "" ) ) ) )
+        
+        if ( strTarget == null )
         {
-            return Messages.MANDATORY_FIELDS;
-        }
-
-        if ( strTarget.equals( EMPTY_STRING ) )
-        {
-            setTarget( strTargetFramename );
+            setTarget( EMPTY_STRING );
         }
         else
         {
@@ -218,7 +205,6 @@ public class EntrySelect extends Entry
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_NB_ITEMS_PER_PAGE, String.valueOf( _nItemsPerPage ) );
         model.put( MARK_OPTION_LIST, paginator.getPageItems( ) );
-        model.put( MARK_TARGET_DEFAULT_VALUE, AppPropertiesService.getProperty( PROPERTY_TARGET_DEFAULT_VALUE, TARGET_DEFAULT_VALUE ) );
     }
 
     @Override
