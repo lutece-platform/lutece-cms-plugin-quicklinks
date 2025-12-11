@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset quicklinks:init_db_quicklinks.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Init table quicklinks_action
 --

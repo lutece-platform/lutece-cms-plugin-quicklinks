@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset quicklinks:create_core_quicklinks.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 DROP TABLE IF EXISTS quicklinks_portlet;
 
 --

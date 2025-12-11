@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset quicklinks:init_core_quicklinks.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Dumping data for table core_admin_right
 --
