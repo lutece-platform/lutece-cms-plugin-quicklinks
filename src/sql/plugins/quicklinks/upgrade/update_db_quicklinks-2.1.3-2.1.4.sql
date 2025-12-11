@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset quicklinks:update_db_quicklinks-2.1.3-2.1.4.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 DROP TABLE IF EXISTS quicklinks_action;
 CREATE TABLE IF NOT EXISTS quicklinks_action (
   id_action int(11) NOT NULL DEFAULT '0',
