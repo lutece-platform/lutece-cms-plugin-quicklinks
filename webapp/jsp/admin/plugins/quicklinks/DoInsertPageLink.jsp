@@ -1,4 +1,4 @@
 <jsp:include page="../../insert/InsertServiceHeader.jsp" />
-<jsp:useBean id="internalLinkInsertService" scope="session" class="fr.paris.lutece.plugins.quicklinks.web.InternalLinkInsertServiceJspBean" />
+<%@page import="fr.paris.lutece.plugins.quicklinks.web.InternalLinkInsertServiceJspBean"%>
 
-<% response.sendRedirect( internalLinkInsertService.doInsertUrl( request ) );%>
+${ pageContext.response.sendRedirect( internalLinkInsertServiceJspBean.doInsertUrl( pageContext.request ) ) }

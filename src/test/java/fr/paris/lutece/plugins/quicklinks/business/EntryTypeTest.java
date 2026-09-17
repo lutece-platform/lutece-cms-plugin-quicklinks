@@ -37,15 +37,20 @@ import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
+import org.junit.jupiter.api.Test;
 
 public class EntryTypeTest extends AbstractEntryTest
 {
     private final int _id = 1111111111;
-    private static Plugin _plugin = PluginService.getPlugin( QuicklinksPlugin.PLUGIN_NAME );
+    /**
+     * The unit-test container never runs the portal startup, so PluginService has no cache and resolving a
+     * plugin there fails. DAOUtil falls back on the portal pool when the plugin is null, which is what every
+     * query of this plugin uses anyway.
+     */
+    private final Plugin _plugin = null;
     
+    @Test
     public void testFind( )
     {
         createEntryType( _id, "title", "className", "templateCreate", "templateModify" );
@@ -60,6 +65,7 @@ public class EntryTypeTest extends AbstractEntryTest
         deleteEntryType( _id );
     }
     
+    @Test
     public void testFindAll( )
     {
         createEntryType( _id, "title", "className", "templateCreate", "templateModify" );

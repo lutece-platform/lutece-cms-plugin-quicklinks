@@ -36,8 +36,9 @@ package fr.paris.lutece.plugins.quicklinks.web.portlet;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksFilter;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksHome;
@@ -47,6 +48,7 @@ import fr.paris.lutece.plugins.quicklinks.business.portlet.QuicklinksPortletHome
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletType;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -57,10 +59,16 @@ import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * This class provides the user interface to manage quicklinks Portlet
  */
+@RequestScoped
+@Named
 public class QuicklinksPortletJspBean extends PortletJspBean
 {
     private static final long serialVersionUID = -1659013399553752236L;
@@ -68,6 +76,11 @@ public class QuicklinksPortletJspBean extends PortletJspBean
     ////////////////////////////////////////////////////////////////////////////
     // Constants
     public static final String RIGHT_MANAGE_QUICKLINKS = "QUICKLINKS_MANAGEMENT";
+    private static final String MESSAGE_INVALID_TOKEN = "quicklinks.message.invalidToken";
+    private static final String MESSAGE_PORTLET_NOT_FOUND = "quicklinks.message.portletNotFound";
+    private static final String MESSAGE_PORTLET_TYPE_NOT_FOUND = "quicklinks.message.portletTypeNotFound";
+    private static final String ACTION_CREATE_PORTLET = "quicklinks.createPortlet";
+    private static final String ACTION_MODIFY_PORTLET = "quicklinks.modifyPortlet";
 
     // Markers
     private static final String MARK_ID_QUICKLINKS = "quicklinks_id";
@@ -91,7 +104,13 @@ public class QuicklinksPortletJspBean extends PortletJspBean
         HashMap<String, Object> model = new HashMap<>( );
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         String strIdPortletType = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-        PortletType portletType = PortletTypeHome.findByPrimaryKey( strIdPortletType );
+        PortletType portletType = ( strIdPortletType == null ) ? null : PortletTypeHome.findByPrimaryKey( strIdPortletType );
+
+        if ( ( portletType == null ) || ( portletType.getDoCreateUrl( ) == null ) )
+        {
+            return I18nService.getLocalizedString( MESSAGE_PORTLET_TYPE_NOT_FOUND, getLocale( ) );
+        }
+
         Plugin plugin = PluginService.getPlugin( portletType.getPluginName( ) );
 
         // Set Quicklinks filter
@@ -100,7 +119,7 @@ public class QuicklinksPortletJspBean extends PortletJspBean
         filter.setEnabled( true );
 
         Collection<Quicklinks> listQuicklinks = QuicklinksHome.findbyFilter( filter, plugin );
-        listQuicklinks = AdminWorkgroupService.getAuthorizedCollection( listQuicklinks, getUser( ) );
+        listQuicklinks = AdminWorkgroupService.getAuthorizedCollection( listQuicklinks, (User) getUser( ) );
 
         ReferenceList referenceListQuicklinks = new ReferenceList( );
 
@@ -110,6 +129,8 @@ public class QuicklinksPortletJspBean extends PortletJspBean
         }
 
         model.put( MARK_QUICKLINKS_LIST, referenceListQuicklinks );
+
+        model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, ACTION_CREATE_PORTLET ) );
 
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType, model );
 
@@ -130,16 +151,18 @@ public class QuicklinksPortletJspBean extends PortletJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = -1;
 
-        try
+        if ( ( strPortletId != null ) && strPortletId.matches( "\\d+" ) )
         {
             nPortletId = Integer.parseInt( strPortletId );
         }
-        catch( NumberFormatException ne )
+
+        QuicklinksPortlet portlet = findPortlet( nPortletId );
+
+        if ( portlet == null )
         {
-            AppLogService.error( ne );
+            return AdminMessageService.getMessageUrl( request, MESSAGE_PORTLET_NOT_FOUND, AdminMessage.TYPE_STOP );
         }
 
-        QuicklinksPortlet portlet = (QuicklinksPortlet) PortletHome.findByPrimaryKey( nPortletId );
         Plugin plugin = PluginService.getPlugin( portlet.getPluginName( ) );
         quicklinks = QuicklinksHome.findByPrimaryKey( portlet.getQuicklinksId( ), plugin );
 
@@ -149,7 +172,7 @@ public class QuicklinksPortletJspBean extends PortletJspBean
         filter.setEnabled( true );
 
         Collection<Quicklinks> listQuicklinks = QuicklinksHome.findbyFilter( filter, plugin );
-        listQuicklinks = AdminWorkgroupService.getAuthorizedCollection( listQuicklinks, getUser( ) );
+        listQuicklinks = AdminWorkgroupService.getAuthorizedCollection( listQuicklinks, (User) getUser( ) );
 
         ReferenceList referenceListQuicklinks = new ReferenceList( );
 
@@ -160,6 +183,8 @@ public class QuicklinksPortletJspBean extends PortletJspBean
 
         model.put( MARK_QUICKLINKS_LIST, referenceListQuicklinks );
         model.put( MARK_ID_QUICKLINKS, quicklinks.getId( ) );
+
+        model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, ACTION_MODIFY_PORTLET ) );
 
         HtmlTemplate template = getModifyTemplate( portlet, model );
 
@@ -175,6 +200,11 @@ public class QuicklinksPortletJspBean extends PortletJspBean
      */
     public String doCreate( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, ACTION_CREATE_PORTLET ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_INVALID_TOKEN, AdminMessage.TYPE_STOP );
+        }
+
         QuicklinksPortlet portlet = new QuicklinksPortlet( );
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strQuicklinksId = request.getParameter( PARAMETER_ID_QUICKLINKS );
@@ -223,6 +253,11 @@ public class QuicklinksPortletJspBean extends PortletJspBean
      */
     public String doModify( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, ACTION_MODIFY_PORTLET ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_INVALID_TOKEN, AdminMessage.TYPE_STOP );
+        }
+
         // recovers portlet attributes
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         String strQuicklinksId = request.getParameter( PARAMETER_ID_QUICKLINKS );
@@ -260,5 +295,34 @@ public class QuicklinksPortletJspBean extends PortletJspBean
 
         // displays the page with the potlet updated
         return getPageUrl( portlet.getPageId( ) );
+    }
+
+    /**
+     * Finds the portlet of that identifier, without throwing on a bad one.
+     *
+     * PortletHome.findByPrimaryKey of the core dereferences the row it loaded without checking it exists, so an
+     * unknown identifier raises a NullPointerException there rather than returning null.
+     *
+     * @param nPortletId
+     *            the portlet identifier
+     * @return the portlet, or null when the identifier is unknown
+     */
+    private QuicklinksPortlet findPortlet( int nPortletId )
+    {
+        if ( nPortletId <= 0 )
+        {
+            return null;
+        }
+
+        try
+        {
+            return (QuicklinksPortlet) PortletHome.findByPrimaryKey( nPortletId );
+        }
+        catch( NullPointerException | ClassCastException e )
+        {
+            AppLogService.debug( "Unknown quicklinks portlet {}", nPortletId );
+
+            return null;
+        }
     }
 }

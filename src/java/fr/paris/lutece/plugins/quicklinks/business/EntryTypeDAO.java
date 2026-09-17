@@ -38,12 +38,14 @@ import java.util.Collection;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *
  * Class EntryTypeDAO
  *
  */
+@ApplicationScoped
 public class EntryTypeDAO implements IEntryTypeDAO
 {
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_entry_type, title_key, class_name, "

@@ -38,10 +38,12 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * QuicklinksActionDAO
  */
+@ApplicationScoped
 public class QuicklinksActionDAO implements IQuicklinksActionDAO
 {
     private static final String SQL_QUERY_SELECT_ACTIONS = "SELECT a.name_key, a.description_key, a.action_url, a.icon_url, a.action_permission ,a.quicklinks_state"

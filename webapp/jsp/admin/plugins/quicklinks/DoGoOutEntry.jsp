@@ -1,8 +1,6 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 
-<jsp:useBean id="quicklinksQuicklinks" scope="session" class="fr.paris.lutece.plugins.quicklinks.web.QuicklinksJspBean" />
+<%@page import="fr.paris.lutece.plugins.quicklinks.web.QuicklinksJspBean"%>
 
-<%
-quicklinksQuicklinks.init( request , quicklinksQuicklinks.RIGHT_MANAGE_QUICKLINKS );
-    response.sendRedirect( quicklinksQuicklinks.doGoOutEntry( request ) );
-%>
+${ quicklinksJspBean.init( pageContext.request , QuicklinksJspBean.RIGHT_MANAGE_QUICKLINKS ) }
+${ pageContext.response.sendRedirect( quicklinksJspBean.doGoOutEntry( pageContext.request ) ) }

@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -53,7 +53,7 @@ public final class EntryHome
     protected static final int STEP = 1;
 
     // Static variable pointed at the DAO instance
-    private static IEntryDAO _dao = SpringContextService.getBean( "quicklinks.entryDAO" );
+    private static IEntryDAO _dao = CDI.current( ).select( IEntryDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated
@@ -92,9 +92,9 @@ public final class EntryHome
 
         try
         {
-            entrySpecific = (IEntry) Class.forName( entryType.getClassName( ) ).newInstance( );
+            entrySpecific = (IEntry) Class.forName( entryType.getClassName( ) ).getDeclaredConstructor( ).newInstance( );
         }
-        catch ( IllegalAccessException | InstantiationException | ClassNotFoundException e )
+        catch ( ReflectiveOperationException e )
         {
             AppLogService.error( e );
             return null;
@@ -317,9 +317,9 @@ public final class EntryHome
 
         try
         {
-            entrySpecific = (IEntry) Class.forName( entry.getEntryType( ).getClassName( ) ).newInstance( );
+            entrySpecific = (IEntry) Class.forName( entry.getEntryType( ).getClassName( ) ).getDeclaredConstructor( ).newInstance( );
         }
-        catch ( IllegalAccessException | InstantiationException | ClassNotFoundException e )
+        catch ( ReflectiveOperationException e )
         {
             // class doesn't exist
             AppLogService.error( e );

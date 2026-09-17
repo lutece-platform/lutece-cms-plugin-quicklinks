@@ -35,6 +35,7 @@
 package fr.paris.lutece.plugins.quicklinks.business.insertservice;
 
 import java.util.Collection;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for InternalLinkInsertService objects
@@ -42,7 +43,7 @@ import java.util.Collection;
 public class InternalLinkInsertServiceHome
 {
     // Static variable pointed at the DAO instance
-    private static InternalLinkInsertServiceDAO _dao = InternalLinkInsertServiceDAO.getInstance( );
+    private static InternalLinkInsertServiceDAO _dao = CDI.current( ).select( InternalLinkInsertServiceDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated.

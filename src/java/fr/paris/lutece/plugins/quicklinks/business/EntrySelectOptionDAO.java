@@ -38,12 +38,14 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *
  * Class EntrySelectDAO
  *
  */
+@ApplicationScoped
 public class EntrySelectOptionDAO implements IEntrySelectOptionDAO
 {
     private static final String SQL_QUERY_NEW_PK = " SELECT max( id_option ) FROM quicklinks_entry_select_option WHERE id_entry = ? ";

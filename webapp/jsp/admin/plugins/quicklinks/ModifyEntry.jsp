@@ -1,7 +1,7 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 <jsp:include page="../../AdminHeader.jsp" />
-<jsp:useBean id="quicklinksQuicklinks" scope="session" class="fr.paris.lutece.plugins.quicklinks.web.QuicklinksJspBean" />
-<% quicklinksQuicklinks.init( request, quicklinksQuicklinks.RIGHT_MANAGE_QUICKLINKS); %>
-<%= quicklinksQuicklinks.getModifyEntry( request ) %>
+<%@page import="fr.paris.lutece.plugins.quicklinks.web.QuicklinksJspBean"%>
+${ quicklinksJspBean.init( pageContext.request, QuicklinksJspBean.RIGHT_MANAGE_QUICKLINKS) }
+${ quicklinksJspBean.getModifyEntry( pageContext.request ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

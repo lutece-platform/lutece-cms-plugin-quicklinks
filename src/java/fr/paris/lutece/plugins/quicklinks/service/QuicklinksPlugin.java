@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.quicklinks.service;
 
 import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * class QuicklinksPlugin
@@ -50,6 +51,6 @@ public class QuicklinksPlugin extends PluginDefaultImplementation
     public void init( )
     {
         // Initialize the Quicklinks service
-        QuicklinksService.getInstance( ).init( );
+        CDI.current( ).select( QuicklinksService.class ).get( ).init( );
     }
 }

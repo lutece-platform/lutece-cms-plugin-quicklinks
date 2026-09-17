@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods (create, find, ...) for SpaceAction objects
@@ -47,7 +47,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class QuicklinksActionHome
 {
     // Static variable pointed at the DAO instance
-    private static IQuicklinksActionDAO _dao = SpringContextService.getBean( "quicklinks.quicklinksActionDAO" );
+    private static IQuicklinksActionDAO _dao = CDI.current( ).select( IQuicklinksActionDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

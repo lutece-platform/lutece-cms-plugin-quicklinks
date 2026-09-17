@@ -1,8 +1,6 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 
-<jsp:useBean id="quicklinksEntrySelectOption" scope="session" class="fr.paris.lutece.plugins.quicklinks.web.QuicklinksEntrySelectJspBean" />
+<%@page import="fr.paris.lutece.plugins.quicklinks.web.QuicklinksEntrySelectJspBean"%>
 
-<% 
-quicklinksEntrySelectOption.init( request, quicklinksEntrySelectOption.RIGHT_MANAGE_QUICKLINKS);
-    response.sendRedirect( quicklinksEntrySelectOption.doConfirmRemoveSelectOption( request ) );
-%>
+${ quicklinksEntrySelectJspBean.init( pageContext.request, QuicklinksEntrySelectJspBean.RIGHT_MANAGE_QUICKLINKS) }
+${ pageContext.response.sendRedirect( quicklinksEntrySelectJspBean.doConfirmRemoveSelectOption( pageContext.request ) ) }
