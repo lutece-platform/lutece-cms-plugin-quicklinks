@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.quicklinks.business;
 import java.util.Collection;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  *
@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class EntryTypeHome
 {
     // Static variable pointed at the DAO instance
-    private static IEntryTypeDAO _dao = SpringContextService.getBean( "quicklinks.entryTypeDAO" );
+    private static IEntryTypeDAO _dao = CDI.current( ).select( IEntryTypeDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

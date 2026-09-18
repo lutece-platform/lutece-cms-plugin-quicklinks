@@ -39,10 +39,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.quicklinks.business.Entry;
 import fr.paris.lutece.plugins.quicklinks.business.EntryFilter;
 import fr.paris.lutece.plugins.quicklinks.business.EntryHome;
@@ -76,10 +77,14 @@ import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 /**
  * This class provides the user interface to manage {@link Quicklinks} features ( manage, create, modify, remove)
  */
+@SessionScoped
+@Named
 public class QuicklinksJspBean extends PluginAdminPageJspBean
 {
     private static final long serialVersionUID = -5176913689822438398L;
@@ -191,7 +196,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
     {
         HashMap<String, Object> model = new HashMap<>( );
         Collection<Quicklinks> quicklinksList = QuicklinksHome.findAll( getPlugin( ) );
-        quicklinksList = AdminWorkgroupService.getAuthorizedCollection( quicklinksList, getUser( ) );
+        quicklinksList = AdminWorkgroupService.getAuthorizedCollection( quicklinksList, (User) getUser( ) );
         setPageTitleProperty( MESSAGE_PAGE_TITLE_MANAGE );
 
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_STYLES_PER_PAGE, DEFAULT_PAGINATOR_STYLES_PER_PAGE );
@@ -220,7 +225,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
                 modelQuicklinks.put( MARK_QUICKLINKS_INCLUDE_TAG, strlabelTag );
             }
 
-            modelQuicklinks.put( MARK_QUICKLINKS_ACTIONS, RBACService.getAuthorizedActionsCollection( listActions, quicklinks, getUser( ) ) );
+            modelQuicklinks.put( MARK_QUICKLINKS_ACTIONS, RBACService.getAuthorizedActionsCollection( listActions, quicklinks, (User) getUser( ) ) );
             listQuicklinksWithListActions.add( modelQuicklinks );
         }
 
@@ -228,7 +233,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_QUICKLINKS_LIST, listQuicklinksWithListActions );
         model.put( MARK_PERMISSION_CREATE,
-                RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, QuicklinksResourceIdService.PERMISSION_CREATE, getUser( ) ) );
+                RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, QuicklinksResourceIdService.PERMISSION_CREATE, (User) getUser( ) ) );
         model.put( MARK_PLUGIN, getPlugin( ) );
 
         // Get Actions list
@@ -249,7 +254,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
     {
         Locale locale = getLocale( );
 
-        if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, QuicklinksResourceIdService.PERMISSION_CREATE, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, QuicklinksResourceIdService.PERMISSION_CREATE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -293,7 +298,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
      */
     public String doCreateQuicklinks( HttpServletRequest request ) throws AccessDeniedException
     {
-        if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, QuicklinksResourceIdService.PERMISSION_CREATE, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, QuicklinksResourceIdService.PERMISSION_CREATE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -438,7 +443,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         Quicklinks quicklinks = getAuthorizedQuicklinks( request, QuicklinksResourceIdService.PERMISSION_MODIFY );
 
         if ( ( Boolean.parseBoolean( strState ) != quicklinks.isEnabled( ) ) && !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE,
-                String.valueOf( quicklinks.getId( ) ), QuicklinksResourceIdService.PERMISSION_CHANGE_STATE, getUser( ) ) )
+                String.valueOf( quicklinks.getId( ) ), QuicklinksResourceIdService.PERMISSION_CHANGE_STATE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -557,8 +562,8 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         int nIdQuicklinks = Integer.parseInt( strIdQuicklinks );
         Quicklinks quicklinks = QuicklinksHome.findByPrimaryKey( nIdQuicklinks, getPlugin( ) );
 
-        if ( ( quicklinks == null ) || !AdminWorkgroupService.isAuthorized( quicklinks, getUser( ) )
-                || !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( quicklinks.getId( ) ), strPermissionType, getUser( ) ) )
+        if ( ( quicklinks == null ) || !AdminWorkgroupService.isAuthorized( quicklinks, (User) getUser( ) )
+                || !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( quicklinks.getId( ) ), strPermissionType, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -823,7 +828,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( entry.getIdQuicklinks( ) ), QuicklinksResourceIdService.PERMISSION_MODIFY,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -871,7 +876,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( entry.getIdQuicklinks( ) ), QuicklinksResourceIdService.PERMISSION_MODIFY,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -921,7 +926,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( entry.getIdQuicklinks( ) ), QuicklinksResourceIdService.PERMISSION_MODIFY,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -960,7 +965,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( entry.getIdQuicklinks( ) ), QuicklinksResourceIdService.PERMISSION_MODIFY,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -1001,7 +1006,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( quicklinks.getId( ) ), QuicklinksResourceIdService.PERMISSION_CHANGE_STATE,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -1040,7 +1045,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( quicklinks.getId( ) ), QuicklinksResourceIdService.PERMISSION_CHANGE_STATE,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -1089,7 +1094,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( quicklinks.getId( ) ), QuicklinksResourceIdService.PERMISSION_CHANGE_STATE,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -1147,7 +1152,7 @@ public class QuicklinksJspBean extends PluginAdminPageJspBean
         }
 
         if ( !RBACService.isAuthorized( Quicklinks.RESOURCE_TYPE, String.valueOf( entry.getIdQuicklinks( ) ), QuicklinksResourceIdService.PERMISSION_MODIFY,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }

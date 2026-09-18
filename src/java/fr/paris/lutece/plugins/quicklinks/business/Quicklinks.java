@@ -40,7 +40,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
-import fr.paris.lutece.portal.service.workgroup.WorkgroupRemovalListenerService;
 import fr.paris.lutece.util.xml.XmlUtil;
 
 /**
@@ -64,7 +63,6 @@ public class Quicklinks implements AdminWorkgroupResource, RBACResource, Cloneab
     private static final String ATTRIBUTE_ENTRY_TITLE = "title";
     private static final String ATTRIBUTE_ENTRY_TYPE = "type";
     private static final String ATTRIBUTE_ENTRY_ORDER = "order";
-    private static QuicklinksWorkgroupRemovalListener _listenerWorkgroup;
     private int _nId;
     private String _strTitle;
     private QuicklinksType _enumType;
@@ -90,18 +88,6 @@ public class Quicklinks implements AdminWorkgroupResource, RBACResource, Cloneab
         _strCssStyle = strCssStyle;
     }
 
-    /**
-     * Initialize the {@link Quicklinks}
-     */
-    public static void init( )
-    {
-        // Create removal listeners and register them
-        if ( _listenerWorkgroup == null )
-        {
-            _listenerWorkgroup = new QuicklinksWorkgroupRemovalListener( );
-            WorkgroupRemovalListenerService.getService( ).registerListener( _listenerWorkgroup );
-        }
-    }
 
     /**
      * @return the idQuicklinks

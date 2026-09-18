@@ -33,11 +33,18 @@
  */
 package fr.paris.lutece.plugins.quicklinks.service;
 
-import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
-
+import fr.paris.lutece.plugins.quicklinks.business.QuicklinksWorkgroupRemovalListener;
+import fr.paris.lutece.portal.service.util.RemovalListenerService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+@ApplicationScoped
 public class QuicklinksService
 {
-    private static QuicklinksService _singleton = new QuicklinksService( );
+
+    @Inject
+    @Named( "workgroupRemovalService" )
+    private RemovalListenerService _workgroupRemovalService;
 
     /**
      * Initialize the Quicklinks service
@@ -45,16 +52,7 @@ public class QuicklinksService
      */
     public void init( )
     {
-        Quicklinks.init( );
+        _workgroupRemovalService.registerListener( new QuicklinksWorkgroupRemovalListener( ) );
     }
 
-    /**
-     * Returns the instance of the singleton
-     *
-     * @return The instance of the singleton
-     */
-    public static QuicklinksService getInstance( )
-    {
-        return _singleton;
-    }
 }

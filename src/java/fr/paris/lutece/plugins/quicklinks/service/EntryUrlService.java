@@ -43,14 +43,19 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.url.UrlItem;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.ServletContext;
 
 /**
  * Service for Url entry types. Provide ImageResource managemenent
  *
  */
+@ApplicationScoped
 public class EntryUrlService implements ImageResourceProvider
 {
-    private static EntryUrlService _singleton = new EntryUrlService( );
     private static final String IMAGE_RESOURCE_TYPE_ID = "quicklinks_entryurl_image";
 
     /**
@@ -62,14 +67,16 @@ public class EntryUrlService implements ImageResourceProvider
     }
 
     /**
-     * Get the unique instance of the service
+     * Instantiates the bean when the application context starts, so the image provider is registered before the
+     * first request: a CDI bean nothing injects is never created.
      *
-     * @return The unique instance
+     * @param context
+     *            the servlet context being initialised
      */
-    public static EntryUrlService getInstance( )
+    public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
     {
-        return _singleton;
     }
+
 
     /**
      * Return the Resource id
@@ -112,7 +119,7 @@ public class EntryUrlService implements ImageResourceProvider
      */
     public static String getResourceImageEntryUrl( int nEntryUrl )
     {
-        String strResourceType = EntryUrlService.getInstance( ).getResourceTypeId( );
+        String strResourceType = CDI.current( ).select( EntryUrlService.class ).get( ).getResourceTypeId( );
         UrlItem url = new UrlItem( Parameters.IMAGE_SERVLET );
         url.addParameter( Parameters.RESOURCE_TYPE, strResourceType );
         url.addParameter( Parameters.RESOURCE_ID, Integer.toString( nEntryUrl ) );

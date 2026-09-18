@@ -35,10 +35,12 @@ package fr.paris.lutece.plugins.quicklinks.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for QuicklinksPortlet objects
  */
+@ApplicationScoped
 public final class QuicklinksPortletDAO implements IQuicklinksPortletDAO
 {
     private static final String SQL_QUERY_INSERT = "INSERT INTO quicklinks_portlet ( id_portlet , id_quicklinks ) VALUES ( ? , ? )";

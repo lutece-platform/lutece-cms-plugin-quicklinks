@@ -33,27 +33,34 @@
  */
 package fr.paris.lutece.plugins.quicklinks.business.portlet;
 
+import fr.paris.lutece.plugins.quicklinks.business.EntryFilter;
+import fr.paris.lutece.plugins.quicklinks.business.EntryHome;
+import fr.paris.lutece.plugins.quicklinks.business.IEntry;
 import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksHome;
-import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.util.xml.XmlUtil;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class represents business objects Quicklinks Portlet
  */
-public class QuicklinksPortlet extends Portlet
+public class QuicklinksPortlet extends PortletHtmlContent
 {
-    /////////////////////////////////////////////////////////////////////////////////
-    // Xml Tags
-    private static final String TAG_QUICKLINKS_PORTLET = "quicklinks-portlet";
-    private static final String TAG_QUICKLINKS_PORTLET_CONTENT = "quicklinks-portlet-content";
+    private static final String TEMPLATE_PORTLET = "skin/plugins/quicklinks/portlet/quicklinks_portlet.html";
+    private static final String MARK_QUICKLINKS = "quicklinks";
+    private static final String MARK_ITEMS = "items";
+    private static final String MARK_CSS_STYLE = "css_style";
 
     /////////////////////////////////////////////////////////////////////////////////
 
@@ -63,51 +70,68 @@ public class QuicklinksPortlet extends Portlet
     private int _nStatus;
 
     /**
-     * Returns the Xml code of the quicklinks portlet without XML heading
+     * Returns the html content of the quicklinks portlet.
      *
      * @param request
      *            The HTTP Servlet request
-     * @return the Xml code of the quicklinks portlet content
+     * @return the html content, empty when the quicklinks is disabled
      */
-    public String getXml( HttpServletRequest request )
+    @Override
+    public String getHtmlContent( HttpServletRequest request )
     {
         Plugin plugin = PluginService.getPlugin( this.getPluginName( ) );
-        Locale locale;
-
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
-        else
-        {
-            locale = I18nService.getDefaultLocale( );
-        }
-
-        StringBuffer strXml = new StringBuffer( );
-        XmlUtil.beginElement( strXml, TAG_QUICKLINKS_PORTLET );
+        Locale locale = ( request != null ) ? request.getLocale( ) : I18nService.getDefaultLocale( );
 
         Quicklinks quicklinks = QuicklinksHome.findByPrimaryKey( getQuicklinksId( ), plugin );
 
-        if ( quicklinks.isEnabled( ) )
+        if ( ( quicklinks == null ) || !quicklinks.isEnabled( ) )
         {
-            XmlUtil.addElement( strXml, TAG_QUICKLINKS_PORTLET_CONTENT, quicklinks.getXml( plugin, locale ).toString( ) );
+            return "";
         }
 
-        XmlUtil.endElement( strXml, TAG_QUICKLINKS_PORTLET );
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdQuicklinks( quicklinks.getId( ) );
+        filter.setIdParent( EntryHome.ROOT_PARENT_ID );
 
-        return addPortletTags( strXml );
+        List<QuicklinksItem> listItems = new ArrayList<>( );
+
+        for ( IEntry entry : EntryHome.findByFilter( filter, plugin ) )
+        {
+            listItems.add( buildItem( entry, plugin, locale ) );
+        }
+
+        Map<String, Object> model = new HashMap<>( );
+        model.put( MARK_QUICKLINKS, quicklinks );
+        model.put( MARK_CSS_STYLE, quicklinks.getCssStyle( ) );
+        model.put( MARK_ITEMS, listItems );
+
+        return AppTemplateService.getTemplate( TEMPLATE_PORTLET, locale, model ).getHtml( );
     }
 
     /**
-     * Returns the Xml code of the quicklinks portlet with XML heading
+     * Builds the view model of one entry and of its children.
      *
-     * @param request
-     *            The HTTP Servlet Request
-     * @return the Xml code of the Articles List portlet
+     * @param entry
+     *            The entry
+     * @param plugin
+     *            The plugin
+     * @param locale
+     *            The locale
+     * @return the item
      */
-    public String getXmlDocument( HttpServletRequest request )
+    private QuicklinksItem buildItem( IEntry entry, Plugin plugin, Locale locale )
     {
-        return XmlUtil.getXmlHeader( ) + getXml( request );
+        QuicklinksItem item = new QuicklinksItem( );
+        item.setId( entry.getId( ) );
+        item.setTitle( entry.getTitle( ) );
+        item.setContent( entry.getHtml( plugin, locale ) );
+
+        for ( IEntry child : entry.getChilds( plugin ) )
+        {
+            item.getChildren( ).add( buildItem( child, plugin, locale ) );
+        }
+
+        return item;
     }
 
     /**
@@ -189,5 +213,75 @@ public class QuicklinksPortlet extends Portlet
     public void setStatus( int nStatus )
     {
         _nStatus = nStatus;
+    }
+
+    /**
+     * View model of one quicklinks entry: its own html content and its children.
+     */
+    public static class QuicklinksItem
+    {
+        private int _nId;
+        private String _strTitle;
+        private String _strContent;
+        private final List<QuicklinksItem> _listChildren = new ArrayList<>( );
+
+        /**
+         * @return the entry identifier
+         */
+        public int getId( )
+        {
+            return _nId;
+        }
+
+        /**
+         * @param nId
+         *            the entry identifier
+         */
+        public void setId( int nId )
+        {
+            _nId = nId;
+        }
+
+        /**
+         * @return the entry title
+         */
+        public String getTitle( )
+        {
+            return _strTitle;
+        }
+
+        /**
+         * @param strTitle
+         *            the entry title
+         */
+        public void setTitle( String strTitle )
+        {
+            _strTitle = strTitle;
+        }
+
+        /**
+         * @return the html the entry renders
+         */
+        public String getContent( )
+        {
+            return _strContent;
+        }
+
+        /**
+         * @param strContent
+         *            the html the entry renders
+         */
+        public void setContent( String strContent )
+        {
+            _strContent = strContent;
+        }
+
+        /**
+         * @return the children of this entry
+         */
+        public List<QuicklinksItem> getChildren( )
+        {
+            return _listChildren;
+        }
     }
 }

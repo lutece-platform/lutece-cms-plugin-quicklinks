@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.quicklinks.business.portlet;
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Quicklinks Portlet objects
@@ -46,7 +46,7 @@ public class QuicklinksPortletHome extends PortletHome
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IQuicklinksPortletDAO _dao = SpringContextService.getBean( "quicklinks.quicklinksPortletDAO" );
+    private static IQuicklinksPortletDAO _dao = CDI.current( ).select( IQuicklinksPortletDAO.class ).get( );
 
     /* This class implements the Singleton design pattern. */
     private static QuicklinksPortletHome _singleton;

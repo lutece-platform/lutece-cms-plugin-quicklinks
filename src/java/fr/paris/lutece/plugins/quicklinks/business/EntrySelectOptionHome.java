@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.quicklinks.business;
 import java.util.Collection;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  *
@@ -50,7 +50,7 @@ public final class EntrySelectOptionHome
     protected static final int STEP = 1;
 
     // Static variable pointed at the DAO instance
-    private static IEntrySelectOptionDAO _dao = SpringContextService.getBean( "quicklinks.entrySelectOptionDAO" );
+    private static IEntrySelectOptionDAO _dao = CDI.current( ).select( IEntrySelectOptionDAO.class ).get( );
 
     /**
      * Private constructor - this class need not be instantiated

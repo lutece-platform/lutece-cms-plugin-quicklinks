@@ -35,12 +35,16 @@ package fr.paris.lutece.plugins.quicklinks.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
  *
  * Class EntryInternalLinkDAO
  *
  */
+@ApplicationScoped
+@Named( "quicklinks.entryInternalLinkDAO" )
 public class EntryInternalLinkDAO implements IEntrySpecificDAO
 {
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT title, content "

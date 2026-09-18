@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.service.page.IPageService;
 import fr.paris.lutece.portal.service.page.PageResourceIdService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -60,13 +60,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 /**
  * This class provides the user interface to manage InternalLink features
  */
+@SessionScoped
+@Named
 public class InternalLinkInsertServiceJspBean extends InsertServiceJspBean implements InsertServiceSelectionBean
 {
     // Constants
@@ -104,7 +108,7 @@ public class InternalLinkInsertServiceJspBean extends InsertServiceJspBean imple
     private AdminUser _user;
     private transient Plugin _plugin;
     private String _input;
-    private transient IPageService _pageService = (IPageService) SpringContextService.getBean( "pageService" );
+    private transient IPageService _pageService = CDI.current( ).select( IPageService.class ).get( );
 
     // Methods
 
@@ -239,7 +243,7 @@ public class InternalLinkInsertServiceJspBean extends InsertServiceJspBean imple
     private HashMap getDefaultModel( )
     {
         HashMap model = new HashMap( );
-        model.put( MARK_PLUGIN_NAME, _plugin.getName( ) );
+        model.put( MARK_PLUGIN_NAME, ( _plugin == null ) ? "" : _plugin.getName( ) );
         model.put( MARK_INPUT, _input );
 
         return model;

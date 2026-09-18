@@ -39,12 +39,14 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *
  * Class EntryDAO
  *
  */
+@ApplicationScoped
 public class EntryDAO implements IEntryDAO
 {
     private static final String SQL_QUERY_NEW_PK = " SELECT max( id_entry ) FROM quicklinks_entry";
@@ -266,7 +268,7 @@ public class EntryDAO implements IEntryDAO
 
         strSQL += SQL_QUERY_SELECT_BY_FILTER_ORDER_BY;
 
-        AppLogService.debug( "Sql query Entry filter : " + strSQL );
+        AppLogService.debug( "Sql query Entry filter : {}", strSQL );
 
         DAOUtil daoUtil = new DAOUtil( strSQL, plugin );
         int nIndex = 1;
@@ -274,35 +276,35 @@ public class EntryDAO implements IEntryDAO
         if ( filter.getId( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getId( ) );
-            AppLogService.debug( PARAM + nIndex + " (getId) = " + filter.getId( ) );
+            AppLogService.debug( "{}{} (getId) = {}", PARAM, nIndex, filter.getId( ) );
             nIndex++;
         }
 
         if ( filter.getIdQuicklinks( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdQuicklinks( ) );
-            AppLogService.debug( PARAM + nIndex + " (getIdQuicklinks) = " + filter.getIdQuicklinks( ) );
+            AppLogService.debug( "{}{} (getIdQuicklinks) = {}", PARAM, nIndex, filter.getIdQuicklinks( ) );
             nIndex++;
         }
 
         if ( filter.getIdType( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdType( ) );
-            AppLogService.debug( PARAM + nIndex + " (getIdType) = " + filter.getIdType( ) );
+            AppLogService.debug( "{}{} (getIdType) = {}", PARAM, nIndex, filter.getIdType( ) );
             nIndex++;
         }
 
         if ( filter.getIdOrder( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdOrder( ) );
-            AppLogService.debug( PARAM + nIndex + " (getIdOrder) = " + filter.getIdOrder( ) );
+            AppLogService.debug( "{}{} (getIdOrder) = {}", PARAM, nIndex, filter.getIdOrder( ) );
             nIndex++;
         }
 
         if ( filter.getIdParent( ) != EntryFilter.UNUSED_ATTRIBUTE_VALUE )
         {
             daoUtil.setInt( nIndex, filter.getIdParent( ) );
-            AppLogService.debug( PARAM + nIndex + " (getIdParent) = " + filter.getIdParent( ) );
+            AppLogService.debug( "{}{} (getIdParent) = {}", PARAM, nIndex, filter.getIdParent( ) );
         }
         return daoUtil;
     }

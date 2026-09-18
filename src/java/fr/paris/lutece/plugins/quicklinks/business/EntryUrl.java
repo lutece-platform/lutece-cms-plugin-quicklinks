@@ -37,9 +37,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.quicklinks.service.EntryUrlService;
@@ -306,7 +306,7 @@ public class EntryUrl extends Entry
         if ( bUpdateImage )
         {
             MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
-            FileItem item = mRequest.getFile( PARAMETER_IMAGE );
+            MultipartItem item = mRequest.getFile( PARAMETER_IMAGE );
             setImage( item.get( ) );
             setImageMimeType( item.getContentType( ) );
         }

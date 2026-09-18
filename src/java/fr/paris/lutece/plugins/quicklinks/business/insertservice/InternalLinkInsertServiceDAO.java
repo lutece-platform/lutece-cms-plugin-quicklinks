@@ -38,34 +38,14 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for InternalLinkInsertService objects
  */
+@ApplicationScoped
 public class InternalLinkInsertServiceDAO
 {
-    /**
-     * This class implements the Singleton design pattern.
-     */
-    private static final InternalLinkInsertServiceDAO _dao = new InternalLinkInsertServiceDAO( );
-
-    /**
-     * Creates a new InternalLinkInsertServiceDAO object.
-     */
-    private InternalLinkInsertServiceDAO( )
-    {
-    }
-
-    /**
-     * Returns the unique instance of the singleton.
-     *
-     * @return the instance
-     */
-    static InternalLinkInsertServiceDAO getInstance( )
-    {
-        return _dao;
-    }
-
     /**
      * The collection of page
      *
@@ -99,8 +79,6 @@ public class InternalLinkInsertServiceDAO
                 page.setDescriptionPage( daoUtil.getString( 3 ) );
                 list.add( page );
             }
-
-            daoUtil.free( );
         }
         return list;
     }
