@@ -61,7 +61,7 @@ public class EntrySelect extends Entry
 
     // JSP URL
     private static final String JSP_URL_PREFIX = "jsp/admin/plugins/quicklinks/";
-    private static final String JSP_URL_MODIFY = "ModifyEntry.jsp";
+    private static final String JSP_URL_MODIFY = "ManageQuicklinks.jsp?view=modifyEntry";
 
     // Templates
     private static final String TEMPLATE_DISPLAY = "skin/plugins/quicklinks/entry_select.html";

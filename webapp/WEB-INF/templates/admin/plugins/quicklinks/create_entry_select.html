@@ -1,19 +1,20 @@
 <@pageContainer>
     <@pageColumn >
         <@pageHeader title='#i18n{quicklinks.create_entry_select.adminTitle}' />
-		<@tform enctype='multipart/form-data' name='create_entry_select' action='jsp/admin/plugins/quicklinks/DoCreateEntry.jsp' boxed=true>
+		<@tform enctype='multipart/form-data' name='create_entry_select' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' boxed=true>
+		<@input type='hidden' name='action' value='createEntry' />
 		<@input type='hidden' name='entry_type_id' id='entry_type_id' value=entry.entryType.id />
 		<@input type='hidden' name='quicklinks_id' id='quicklinks_id' value=entry.idQuicklinks />
 		<@input type='hidden' name='next_step' id='next_step' value='modify' />
 		<@formGroup labelKey='#i18n{quicklinks.create_entry_select.labelTitle}' labelFor='title' mandatory=true>
-			<@input name='title' id='title' maxlength=255 value='' />
+			<@input mandatory=true name='title' id='title' maxlength=255 value='' />
 		</@formGroup>
 		<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' labelFor='blankTarget' rows=2 mandatory=false>
-            <@checkBox name='target' id='blankTarget' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' value='_blank' />
+            <@checkBox orientation='switch' name='target' id='blankTarget' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' value='_blank' />
         </@formGroup>
 		<@formGroup>
 			<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.create_entry_select.buttonLabelCreate}' />
-			<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
+			<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyQuicklinks&amp;quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

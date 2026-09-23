@@ -59,7 +59,7 @@ public class InternalLinkInsertServiceHome
      *         the Name of the page
      * @return the list of the page of the database in form of a page Collection object
      */
-    public static Collection getPageListbyName( String strPageName )
+    public static Collection<InternalLinkInsertService> getPageListbyName( String strPageName )
     {
         return _dao.selectPageListbyName( strPageName );
     }

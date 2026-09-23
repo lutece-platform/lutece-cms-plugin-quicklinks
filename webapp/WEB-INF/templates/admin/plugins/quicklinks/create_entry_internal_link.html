@@ -1,20 +1,21 @@
 <@pageContainer>
     <@pageColumn >
         <@pageHeader title='#i18n{quicklinks.create_entry_internal_link.adminTitle}' />
-		<@tform name='create_entry_internal_link' action='jsp/admin/plugins/quicklinks/DoCreateEntry.jsp' boxed=true >
+		<@tform name='create_entry_internal_link' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' boxed=true >
+		<@input type='hidden' name='action' value='createEntry' />
 		<@input type='hidden' name='entry_type_id' id='entry_type_id' value='${entry.entryType.id}' />
 		<@input type='hidden' name='quicklinks_id' id='quicklinks_id' value='${entry.idQuicklinks}' />
-		<@formGroup labelKey='#i18n{quicklinks.create_entry_internal_link.labelTitle}' mandatory=true>
-			<@input name='title' maxlength=255 value='' />
+		<@formGroup labelKey='#i18n{quicklinks.create_entry_internal_link.labelTitle}' labelFor='title' mandatory=true>
+			<@input mandatory=true name='title' id='title' maxlength=255 value='' />
 		</@formGroup>
 		<@row>
 			<@columns>
-				<@formGroup labelKey='#i18n{quicklinks.create_entry_text.labelDescription}' mandatory=true >
+				<@formGroup labelKey='#i18n{quicklinks.create_entry_text.labelDescription}' labelFor='content' mandatory=true>
 				<@inputGroup>
 					<@input type='textarea' richtext=true name='content' id='content' value='' />
 					<@inputGroupItem>
 						<@btnGroup>
-							<@button id='img-linkservice' color='default' buttonIcon='link' title='#i18n{quicklinks.create_entry_internal_link.labelLinkService}' params='data-bs-toggle="modal" data-bs-target="#insertServiceModal"' />
+							<@button id='img-linkservice' color='light' buttonIcon='link' title='#i18n{quicklinks.create_entry_url.labelLinkService}' />
 							<@button id='trash' color='danger' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' />
 							<@button id='btn-preview' color='primary' buttonIcon='play' title='#i18n{quicklinks.create_entry_internal_link.buttonShowPreview}' />
 						</@btnGroup>
@@ -23,7 +24,7 @@
 				</@formGroup>
 				<@formGroup>
 					<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.create_entry_internal_link.buttonLabelCreate}' />
-					<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
+					<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyQuicklinks&amp;quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
 				</@formGroup>
 			</@columns>
 			<@columns>
@@ -37,7 +38,7 @@
 function linkservice(){
 	const showPreview = document.getElementById('show-preview') 
 	showPreview.innerHTML='';
-	fen=window.open("${base_url}/jsp/admin/insert/GetAvailableInsertServices.jsp?input=content&selected_text=quicklinks&mode=0","#i18n{quicklinks.create_entry_internal_link.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, left=500, top=200, width=800, height=600");
+	const fen = window.open("${webapp_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=content&selected_text=quicklinks&mode=0","#i18n{quicklinks.create_entry_url.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, left=500, top=200, width=800, height=600");
 	fen.focus();
 }
 
@@ -55,7 +56,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 	btnPreview.addEventListener( 'click', ( event ) => {
 		showPreview.innerHTML = content.value
 		showPreview.classList.remove( 'd-none' );
-		showPreview.classList.add( 'alert alert-info' );
+		showPreview.classList.add( 'alert', 'alert-info' );
 		return false;
 	});
 

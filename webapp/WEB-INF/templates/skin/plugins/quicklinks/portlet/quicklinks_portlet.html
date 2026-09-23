@@ -2,19 +2,19 @@
      Skin templates run with an undefined output format, so ?no_esc is refused and the html goes out as it is.
      Ported from webapp/WEB-INF/xsl/normal/portlet_quicklinks.xsl, which the v8 core no longer applies. -->
 <#macro quicklinksEntries items depth=0>
-<ul<#if depth == 0 && css_style?has_content> class="${css_style}"</#if>>
+<@chList class=(depth == 0)?then(css_style!'', '')>
 	<#list items as item>
-	<li class="quicklinks-entry">
+	<@chItem class='quicklinks-entry'>
 		${item.content!""}
 		<#if item.children?has_content>
 			<@quicklinksEntries items=item.children depth=depth+1 />
 		</#if>
-	</li>
+	</@chItem>
 	</#list>
-</ul>
+</@chList>
 </#macro>
-<div class="quicklinks-portlet portlet-content">
+<@cBlock class='quicklinks-portlet portlet-content'>
 <#if items?has_content>
 	<@quicklinksEntries items=items />
 </#if>
-</div>
+</@cBlock>

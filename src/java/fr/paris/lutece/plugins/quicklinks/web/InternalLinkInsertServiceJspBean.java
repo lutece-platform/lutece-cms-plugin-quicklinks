@@ -32,6 +32,7 @@
  * License 1.0
  */
 
+
 package fr.paris.lutece.plugins.quicklinks.web;
 
 import fr.paris.lutece.plugins.quicklinks.business.insertservice.InternalLinkInsertService;
@@ -44,208 +45,171 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.page.IPageService;
 import fr.paris.lutece.portal.service.page.PageResourceIdService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
-import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
+import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.web.constants.Messages;
-import fr.paris.lutece.portal.web.insert.InsertServiceJspBean;
 import fr.paris.lutece.portal.web.insert.InsertServiceSelectionBean;
+import fr.paris.lutece.portal.web.insert.InsertServiceSelectorJspBean;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 /**
- * This class provides the user interface to manage InternalLink features
+ * This class provides the user interface of the internal link insert service: search a page, then insert a link to it
  */
-@SessionScoped
+@RequestScoped
 @Named
-public class InternalLinkInsertServiceJspBean extends InsertServiceJspBean implements InsertServiceSelectionBean
+@Controller( controllerJsp = "InternalLinkInsertService.jsp", controllerPath = "jsp/admin/plugins/quicklinks/", right = "CORE_LINK_SERVICE_MANAGEMENT", securityTokenEnabled = true )
+public class InternalLinkInsertServiceJspBean extends MVCAdminJspBean implements InsertServiceSelectionBean
 {
-    // Constants
     private static final long serialVersionUID = -5176913689822438398L;
 
     private static final String REGEX_PAGE_ID = "^[\\d]+$";
 
-    //Parameters
+    // Views
+    private static final String VIEW_SEARCH_PAGE = "searchPage";
+
+    // Actions
+    private static final String ACTION_INSERT_LINK = "insertLink";
+
+    // Parameters
     private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
     private static final String PARAMETER_PAGE_NAME = "page_name";
-    private static final String PARAMETER_PAGE_ID = "page";
+    private static final String PARAMETER_PAGE_ID = "id_page";
     private static final String PARAMETER_PAGE_ID_URL = "page_id";
     private static final String PARAMETER_ALT = "alt";
     private static final String PARAMETER_TARGET = "target";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_INPUT = "input";
+    private static final String PARAMETER_MODE = "mode";
 
-    //Properties
-    private static final String PROPERTY_SEARCH_MESSAGE = "message.warning.resulsearch.empty";
-
-    //Markers
+    // Markers
     private static final String MARK_PLUGIN_NAME = "plugin_name";
-    private static final String MARK_SEARCH_MESSAGE = "search_message";
     private static final String MARK_PAGES_LIST = "pages_list";
-    private static final String MARK_LIST_PAGE = "list_page";
     private static final String MARK_URL = "url";
     private static final String MARK_TARGET = "target";
     private static final String MARK_ALT = "alt";
     private static final String MARK_NAME = "name";
     private static final String MARK_INPUT = "input";
 
-    //Templates
+    // Templates
     private static final String TEMPLATE_SELECTOR_PAGE = "admin/plugins/quicklinks/internallinkinsertservice_selector.html";
     private static final String TEMPLATE_LINK = "admin/plugins/quicklinks/internallinkinsertservice_link.html";
-    private AdminUser _user;
-    private transient Plugin _plugin;
-    private String _input;
-    private transient IPageService _pageService = CDI.current( ).select( IPageService.class ).get( );
 
-    // Methods
+    // Miscellaneous
+    private static final String JSP_DO_INSERT = "jsp/admin/insert/DoInsertIntoElement.jsp";
+    private static final int MODE_SESSION = 1;
 
     /**
-     * Return the html form for image selection.
+     * Return the html form for page selection, as the core insert service screen displays it.
      *
      * @param request
      *         The Http Request
      * @return The html form.
      */
+    @Override
     public String getInsertServiceSelectorUI( HttpServletRequest request )
     {
-        init( request );
-
         AdminUser user = AdminUserService.getAdminUser( request );
-        String strSearch = request.getParameter( PARAMETER_PAGE_NAME );
-        String strResultSearch = ( strSearch == null ) ? "" : strSearch;
-        String strPageName = replaceString( strResultSearch, "'", "''" );
-
-        HashMap model = getDefaultModel( );
-
-        Collection<InternalLinkInsertService> listPages = InternalLinkInsertServiceHome.getPageListbyName( strPageName );
+        IPageService pageService = CDI.current( ).select( IPageService.class ).get( );
         Collection<InternalLinkInsertService> listPagesAuthorized = new ArrayList<>( );
 
-        for ( InternalLinkInsertService internalLinkInsertService : listPages )
+        for ( InternalLinkInsertService page : InternalLinkInsertServiceHome.getPageListbyName( StringUtils.defaultString( request.getParameter( PARAMETER_PAGE_NAME ) ) ) )
         {
-            if ( _pageService.isAuthorizedAdminPage( internalLinkInsertService.getIdPage( ), PageResourceIdService.PERMISSION_VIEW, user ) )
+            if ( pageService.isAuthorizedAdminPage( page.getIdPage( ), PageResourceIdService.PERMISSION_VIEW, user ) )
             {
-                listPagesAuthorized.add( internalLinkInsertService );
+                listPagesAuthorized.add( page );
             }
         }
 
+        Map<String, Object> model = new HashMap<>( );
+        model.put( MARK_PLUGIN_NAME, StringUtils.defaultString( request.getParameter( PARAMETER_PLUGIN_NAME ) ) );
+        model.put( MARK_INPUT, request.getParameter( PARAMETER_INPUT ) );
         model.put( MARK_PAGES_LIST, listPagesAuthorized );
+        model.put( MARK_URL, AppPathService.getBaseUrl( request ) );
 
-        StringBuilder strListPage = new StringBuilder( );
-
-        if ( listPages.isEmpty( ) )
-        {
-            model.put( MARK_SEARCH_MESSAGE, AppPropertiesService.getProperty( PROPERTY_SEARCH_MESSAGE ) );
-        }
-
-        String strBaseUrl = AppPathService.getBaseUrl( request );
-
-        // Search Message
-        model.put( MARK_URL, strBaseUrl );
-        model.put( MARK_LIST_PAGE, strListPage.toString( ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, AdminUserService.getLocale( request ), model );
 
         return template.getHtml( );
     }
 
     /**
-     * Replaces a string in an initial string by another string
+     * Return the sub categories of the insert service, read by the core insert service list: none.
      *
-     * @param str
-     *         the initial string
-     * @param oldStr
-     *         the string to replace
-     * @param newStr
-     *         the string which will replace the old string
-     * @return the cleaned string
+     * @return An empty list
      */
-    private String replaceString( String str, String oldStr, String newStr )
+    public ReferenceList getSubCategories( )
     {
-        // Temporary string to avoid assignment of parameter str
-        String cleanString = str;
-
-        int index = 0;
-
-        while ( true )
-        {
-            index = cleanString.lastIndexOf( oldStr );
-
-            if ( ( index == 2 ) || ( index == -1 ) )
-            {
-                break;
-            }
-
-            cleanString = cleanString.substring( 0, index ) + newStr + cleanString.substring( index + oldStr.length( ) );
-        }
-
-        return cleanString;
+        return new ReferenceList( );
     }
 
     /**
-     * Insert the specified url into HTML content
+     * Return the page selection filtered by the searched name
+     *
+     * @param request
+     *         The Http Request
+     * @return The html form.
+     */
+    @View( value = VIEW_SEARCH_PAGE, defaultView = true )
+    public String getSearchPage( HttpServletRequest request )
+    {
+        return getInsertServiceSelectorUI( request );
+    }
+
+    /**
+     * Insert a link to the selected page into the HTML content. Only the session of the user changes, for the core
+     * insert screen to read it back, so the action carries no security token.
      *
      * @param request
      *         The http request
-     * @return String The url
+     * @return The redirection result
      */
-    public String doInsertUrl( HttpServletRequest request )
+    @Action( value = ACTION_INSERT_LINK, securityTokenDisabled = true )
+    public String doInsertLink( HttpServletRequest request )
     {
-        init( request );
-
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-        String strTarget = request.getParameter( PARAMETER_TARGET );
-        String strAlt = request.getParameter( PARAMETER_ALT );
-        String strName = request.getParameter( PARAMETER_NAME );
-        HashMap<String, Object> model = new HashMap<>( );
+        Page page = ( ( strPageId != null ) && strPageId.matches( REGEX_PAGE_ID ) ) ? PageHome.findByPrimaryKey( Integer.parseInt( strPageId ) ) : null;
 
-        Page page = null;
-
-        if ( ( strPageId == null ) || !strPageId.matches( REGEX_PAGE_ID ) )
+        if ( page == null )
         {
-            return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
+            return redirect( request, AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP ) );
         }
 
-        page = PageHome.findByPrimaryKey( Integer.parseInt( strPageId ) );
-
+        String strName = request.getParameter( PARAMETER_NAME );
         UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
         url.addParameter( PARAMETER_PAGE_ID_URL, page.getId( ) );
+
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_URL, url.getUrl( ) );
-        model.put( MARK_TARGET, strTarget );
-        model.put( MARK_ALT, strAlt );
-        model.put( MARK_NAME, ( strName.length( ) == 0 ) ? page.getName( ) : strName );
+        model.put( MARK_TARGET, request.getParameter( PARAMETER_TARGET ) );
+        model.put( MARK_ALT, request.getParameter( PARAMETER_ALT ) );
+        model.put( MARK_NAME, StringUtils.isEmpty( strName ) ? page.getName( ) : strName );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LINK, null, model );
+        String strInsert = escapeEcmaScript( AppTemplateService.getTemplate( TEMPLATE_LINK, null, model ).getHtml( ) );
+        request.getSession( ).setAttribute( InsertServiceSelectorJspBean.SESSION_INSERT, strInsert );
 
-        return insertUrl( request, _input, escapeEcmaScript( template.getHtml( ) ) );
-    }
+        UrlItem urlDoInsert = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_DO_INSERT );
+        urlDoInsert.addParameter( PARAMETER_INPUT, request.getParameter( PARAMETER_INPUT ) );
+        urlDoInsert.addParameter( PARAMETER_MODE, MODE_SESSION );
 
-    private void init( HttpServletRequest request )
-    {
-        String strPluginName = request.getParameter( PARAMETER_PLUGIN_NAME );
-        _user = AdminUserService.getAdminUser( request );
-        _plugin = PluginService.getPlugin( strPluginName );
-        _input = request.getParameter( PARAMETER_INPUT );
-    }
-
-    private HashMap getDefaultModel( )
-    {
-        HashMap model = new HashMap( );
-        model.put( MARK_PLUGIN_NAME, ( _plugin == null ) ? "" : _plugin.getName( ) );
-        model.put( MARK_INPUT, _input );
-
-        return model;
+        return redirect( request, urlDoInsert.getUrl( ) );
     }
 }

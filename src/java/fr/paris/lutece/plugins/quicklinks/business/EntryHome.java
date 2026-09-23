@@ -73,6 +73,12 @@ public final class EntryHome
     public static IEntry findByPrimaryKey( int nKey, Plugin plugin )
     {
         IEntry entry = _dao.load( nKey, plugin );
+
+        if ( entry == null )
+        {
+            return null;
+        }
+
         EntryType entryType = EntryTypeHome.findByPrimaryKey( entry.getEntryType( ).getId( ), plugin );
         entry.setEntryType( entryType );
 
@@ -451,6 +457,11 @@ public final class EntryHome
 
         IEntry entryParent = findByOrder( entryIn.getIdQuicklinks( ), entryIn.getIdParent( ),
                 entryIn.getIdOrder( ) + STEP, plugin );
+
+        if ( entryParent == null )
+        {
+            return;
+        }
 
         entryIn.setIdOrder( FIRST_ORDER );
         entryIn.setIdParent( entryParent.getId( ) );

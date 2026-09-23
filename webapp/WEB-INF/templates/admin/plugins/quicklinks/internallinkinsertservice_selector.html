@@ -1,8 +1,8 @@
 <@row class='mt-3'>
 	<@columns>
-		<@tform name='fsearch' action='${url}jsp/admin/plugins/quicklinks/SearchPage.jsp'>
+		<@tform name='fsearch' method='get' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp'>
 		<@input type='hidden' value=plugin_name name='plugin_name' />
-		<@input type='hidden' name='input' value=.data_model.input />	
+		<@input type='hidden' name='input' value=.data_model.input! />	
 		<@formGroup labelKey='#i18n{quicklinks.selector.searchTitle}' helpKey='#i18n{quicklinks.selector.searchHelp}' labelFor='page_name' rows=2>
 			<@inputGroup>
 				<@input name='page_name' id='page_name' placeHolder='#i18n{quicklinks.selector.searchPlaceholder}' />
@@ -14,30 +14,27 @@
 		</@tform>
 	</@columns>
 </@row>	
-<#if pages_list?size &gt; 0 >
-	<@tform name='fenvoi' action='${url}jsp/admin/plugins/quicklinks/DoInsertPageLink.jsp'>
+<#if pages_list?has_content>
+	<@tform name='fenvoi' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp'>
+	<@input type='hidden' name='action' value='insertLink' />
 	<@input type='hidden' value=plugin_name name='plugin_name' />
-	<@input type='hidden' name='input' value=.data_model.input />	
+	<@input type='hidden' name='input' value=.data_model.input! />	
 	
 	<@row>
 		<@columns sm=8>
 			<@box>
 				<@boxHeader title='#i18n{quicklinks.selector.pageChoiceTitle}' titleClass='h6' />
-				<@boxBody class='overflow-auto' params='style="height:50vh"'>
+				<@boxBody class='overflow-auto'>
 				<#list pages_list?sort_by("idPage") as page>
 					<@input type='hidden' name='page_name_${page.idPage!}' id='page_name_${page.idPage!}' value='${page.labelPage}' />
 					<@div class='d-flex justify-content-between mb-1'>
-						<@radioButton name='page' id='page_radio_${page.idPage!}' labelKey='<strong>${page.labelPage}</strong> [${page.idPage!}]' labelFor='page_radio_${page.idPage!}' value='${page.idPage!}' />
+						<@radioButton name='id_page' id='page_radio_${page.idPage!}' labelKey='<strong>${page.labelPage}</strong> [${page.idPage!}]' labelFor='page_radio_${page.idPage!}' value='${page.idPage!}' />
 						<@link class='btn btn-outline-secondary btn-sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{quicklinks.selector.pageShowPage}'>
 							<@icon style='external-link' />
 						</@link>
 					</@div>
 					</#list>
 				</@boxBody>
-				<@boxFooter class='d-flex justify-content-end'>
-					<@button type='submit' class='me-1' buttonIcon='check' title='#i18n{portal.util.labelValidate}' /> 
-					<@button buttonIcon='x' color='default' title='#i18n{portal.util.labelBack}' params='onclick="javascript:history.go(-1);"'/> 
-				</@boxFooter>
 			</@box>
 		</@columns>
 		<@columns sm=4>
@@ -50,8 +47,8 @@
 				<@formGroup labelKey='#i18n{quicklinks.selector.captionTitle}' labelFor='alt' rows=2>
 					<@input name='alt' id='alt' value='' maxlength=50 />
 				</@formGroup>
-				<@formGroup labelKey='#i18n{quicklinks.selector.captionTarget}' labelFor='target' hideTitle=['all'] rows=2>
-					<@select name='target'>
+				<@formGroup labelKey='#i18n{quicklinks.selector.captionTarget}' labelFor='target' rows=2>
+					<@select name='target' id='target'>
 						<@option value='_self' label='#i18n{quicklinks.selector.target.self}' />
 						<@option value='_blank' label='#i18n{quicklinks.selector.target.blank}' />
 						<@option value='_parent' label='#i18n{quicklinks.selector.target.parent}' />
@@ -62,6 +59,12 @@
 			</@box>
 		</@columns>
 	</@row>	
+	<@row>
+		<@columns class='d-flex justify-content-end'>
+			<@button type='submit' class='me-1' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
+			<@button buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' params='onclick="javascript:history.go(-1);"' />
+		</@columns>
+	</@row>
 	</@tform>
 	<script>
 	document.addEventListener( 'DOMContentLoaded', function(){

@@ -1,1 +1,1 @@
-<span class="${(quicklinks.@cssStyle)?if_exists}" id="quicklinks_${entry_text.idQuicklinks}">${entry_text.description}</span>
+<@cInline class='${(quicklinks.@cssStyle)?if_exists}' id='quicklinks_${entry_text.idQuicklinks}'>${entry_text.description!}</@cInline>

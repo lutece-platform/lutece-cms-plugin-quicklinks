@@ -46,6 +46,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class InternalLinkInsertServiceDAO
 {
+    private static final String SQL_QUERY_SELECT_BY_NAME = " SELECT id_page , name ,description FROM core_page WHERE name LIKE ?";
+    private static final String SQL_LIKE_WILDCARD = "%";
+
     /**
      * The collection of page
      *
@@ -53,22 +56,13 @@ public class InternalLinkInsertServiceDAO
      *         the name of the page
      * @return The collection of field
      */
-    Collection selectPageListbyName( String strPageName )
+    Collection<InternalLinkInsertService> selectPageListbyName( String strPageName )
     {
         Collection<InternalLinkInsertService> list = new ArrayList<>( );
-        String strSQL;
 
-        if ( "".equals( strPageName ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_NAME ) )
         {
-            strSQL = " SELECT id_page , name ,description FROM core_page";
-        }
-        else
-        {
-            strSQL = " SELECT id_page , name ,description FROM core_page WHERE name LIKE'%" + strPageName + "%'";
-        }
-
-        try ( DAOUtil daoUtil = new DAOUtil( strSQL ) )
-        {
+            daoUtil.setString( 1, SQL_LIKE_WILDCARD + strPageName + SQL_LIKE_WILDCARD );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
