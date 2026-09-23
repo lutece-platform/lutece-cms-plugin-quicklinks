@@ -1,5 +1,9 @@
 <@input type='hidden' name='token' value='${token}' />
 <@formGroup labelFor="quicklinks_id" labelKey='#i18n{quicklinks.list_quicklinks.labelQuicklinks}' mandatory=true>
+<#if quicklinks_list?has_content>
 <#assign quicklinksDefault><#if quicklinks_id??>${quicklinks_id?string}<#else>-1</#if></#assign>
 <@select id='quicklinks_id' name='quicklinks_id' default_value=quicklinksDefault items=quicklinks_list />
+<#else>
+<@alert color='warning'>#i18n{quicklinks.list_quicklinks.noQuicklinks}</@alert>
+</#if>
 </@formGroup>

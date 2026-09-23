@@ -1,23 +1,24 @@
 <@pageContainer>
     <@pageColumn >
         <@pageHeader title='#i18n{quicklinks.create_entry_select_option.adminTitle}' />
-		<@tform id='create_entry_select_option' name='create_entry_select_option' action='jsp/admin/plugins/quicklinks/DoCreateEntrySelectOption.jsp' boxed=true>
+		<@tform id='create_entry_select_option' name='create_entry_select_option' action='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp' boxed=true>
+			<@input type='hidden' name='action' value='createSelectOption' />
 			<@input type='hidden' name='entry_id' id='entry_id' value='${entry.id}' />
 			<@input type='hidden' name='quicklinks_id' id='quicklinks_id' value='${entry.idQuicklinks}' />
-			<@formGroup labelKey='#i18n{quicklinks.create_entry_select_option.labelTitle}' mandatory=true>
-				<@input name='title' maxlength=255 value='' />
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_select_option.labelTitle}' labelFor='title' mandatory=true>
+				<@input mandatory=true name='title' id='title' maxlength=255 value='' />
 			</@formGroup>
-			<@formGroup labelKey='#i18n{quicklinks.create_entry_select_option.labelUrl}' mandatory=true>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_select_option.labelUrl}' labelFor='url' mandatory=true>
 				<@inputGroup>
 					<@inputGroupItem>
 						<@icon style='link' />
 					</@inputGroupItem>
-					<@input  name='url' id='url' maxlength=255 value=entry.url! />
+					<@input mandatory=true name='url' id='url' maxlength=255 value=entry.url! />
 				</@inputGroup>
 			</@formGroup>
 			<@formGroup>
 				<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.create_entry_select_option.buttonLabelCreate}' />
-				<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
+				<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&amp;entry_id=${entry.id}#option_list" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

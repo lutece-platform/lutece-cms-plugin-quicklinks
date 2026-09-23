@@ -2,50 +2,41 @@
     <@pageColumn>
         <@pageHeader title='#i18n{quicklinks.manage_quicklinks.adminTitle}'>
 		<#if permission_create_quicklinks>
-			<@offcanvas targetUrl="jsp/admin/plugins/quicklinks/CreateQuicklinks.jsp" targetElement="#create_quicklinks" redirectForm=false id="template-create-quicklinks" title="#i18n{quicklinks.create_quicklinks.adminTitle}" btnTitle="#i18n{quicklinks.manage_quicklinks.buttonCreate}" btnIcon="plus" position="end" />
+			<@aButton href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=createQuicklinks' title='#i18n{quicklinks.manage_quicklinks.buttonCreate}' buttonIcon='plus' color='primary' />
 		</#if>
         </@pageHeader>
-		<#if quicklinks_list?size gt 0>
-		<@table headBody=true>
-			<@tr>
-				<@th>#i18n{quicklinks.manage_quicklinks.rowTitle}</@th>
-				<@th>#i18n{quicklinks.manage_quicklinks.rowType}</@th>
-				<@th>#i18n{quicklinks.manage_quicklinks.rowWorkgroupKey}</@th>
-				<@th>#i18n{quicklinks.manage_quicklinks.rowRoleKey}</@th>
-				<@th>#i18n{quicklinks.manage_quicklinks.rowState}</@th>
-				<@th>#i18n{quicklinks.manage_quicklinks.rowActions}</@th>
-			</@tr>
-			<@tableHeadBodySeparator />
+		<#if quicklinks_list?has_content>
+		<@manageFeature>
 			<#list quicklinks_list as quicklinksWithActions>
 			<#assign quicklinks = quicklinksWithActions.quicklinks />
-			<#assign quicklinks_actions = quicklinksWithActions.quicklinks_actions />   
-			<@tr>
-				<@td>${quicklinks.title}</@td>
-				<@td>#i18n{${quicklinks.type.i18nKey}} <#if quicklinksWithActions.quicklinks_include_tag?has_content > - ${quicklinksWithActions.quicklinks_include_tag}</#if></@td>
-				<@td>${quicklinks.workgroup!}</@td>
-				<@td>${quicklinks.roleKey}</@td>
-				<@td>
+			<@manageFeatureItem>
+				<@manageFeatureItemColumn dir='column' align='center'>
+					<@p class='fw-bold mb-1'>${quicklinks.title}</@p>
+					<@p class='text-secondary mb-0'>#i18n{${quicklinks.type.i18nKey}}<#if quicklinksWithActions.quicklinks_include_tag?has_content> - ${quicklinksWithActions.quicklinks_include_tag}</#if></@p>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true dir='column' align='center'>
+					<@p class='mb-1'>#i18n{quicklinks.manage_quicklinks.rowWorkgroupKey} : ${workgroup_labels[quicklinks.workgroup!'']!quicklinks.workgroup!}</@p>
+					<@p class='mb-0'>#i18n{quicklinks.manage_quicklinks.rowRoleKey} : ${role_labels[quicklinks.roleKey!'']!quicklinks.roleKey!}</@p>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true>
 					<#if quicklinks.enabled>
 						<@tag color='success' tagIcon='check' title='#i18n{portal.util.labelEnabled}'>#i18n{portal.util.labelEnabled}</@tag>
 					<#else>
 						<@tag color='danger' tagIcon='x' title='#i18n{portal.util.labelDisabled}'>#i18n{portal.util.labelDisabled}</@tag>
 					</#if>
-				</@td>
-				<@td>
-				<#if quicklinks_actions?exists>
-					<#list quicklinks_actions as action>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true align='end' class='gap-1'>
+					<#list quicklinksWithActions.quicklinks_actions! as action>
 						<#assign btnStyle><#if action.nameKey=="quicklinks.action.delete.name" || action.nameKey=="quicklinks.action.disable.name">danger<#elseif action.nameKey=="quicklinks.action.enable.name" >success<#else>primary</#if></#assign>
-						<@aButton color=btnStyle href="${action.url}?&quicklinks_id=${quicklinks.id}" title=action.description hideTitle=['all'] buttonIcon=action.iconUrl />
+						<@aButton color=btnStyle href="${action.url}&amp;quicklinks_id=${quicklinks.id}" title=action.description hideTitle=['all'] buttonIcon=action.iconUrl />
 					</#list>
-				</#if>  
-				</@td>
-			</@tr>
+				</@manageFeatureItemColumn>
+			</@manageFeatureItem>
 			</#list>
-			</@table>
-			<@paginationAdmin paginator=paginator combo=1 />   
+		</@manageFeature>
+		<@paginationAdmin paginator=paginator combo=1 />
 		<#else>
 			<@empty />
 		</#if>
 	</@pageColumn>
 </@pageContainer>
-<@copyElementToClipboard selector='.copy-content' class='"copy-icon"' />

@@ -1,35 +1,29 @@
-<#macro commonListTable items depth jspRef paramId >
+<#macro commonListTable items depth >
 <#if items?has_content >
 <#list items as entry >
-<@tr>
-	<@td><#if depth gt 0>${' &gt; '?left_pad(depth)}</#if>${entry.title!}</@td>
-	<@td>#i18n{${entry.entryType.titleI18nKey}}</@td>
-	<@td>
-		<@aButton color='primary' href='jsp/admin/plugins/quicklinks/Modify${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonModify}' buttonIcon='pencil'  hideTitle=['all']  />
-		<#if entry.idOrder gt 0>
-			<@aButton color='primary' href='jsp/admin/plugins/quicklinks/DoGoUp${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' buttonIcon='chevron-up'  hideTitle=['all']  />
-		<#else>
-			<@aButton color='primary disabled' disabled=true href='' buttonIcon='chevron-up' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' hideTitle=['all'] />
-		</#if>
-		<#if items?seq_index_of(entry) != items?size-1>
-			<@aButton color='primary' href='jsp/admin/plugins/quicklinks/DoGoDown${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down'  hideTitle=['all']  />
-			<@aButton color='primary' href='jsp/admin/plugins/quicklinks/DoGoIn${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoIn}' buttonIcon='chevron-left'  hideTitle=['all'] />
-		<#else>
-			<@aButton color='primary disabled' disabled=true href='' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down' hideTitle=['all'] />
-			<@aButton color='primary disabled' disabled=true href='' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoIn}' buttonIcon='chevron-left' hideTitle=['all'] />
-		</#if>
-		<#if entry.idOrder == 0 && entry.idParent gt 0>
-			<@aButton color='primary' href='jsp/admin/plugins/quicklinks/DoGoOut${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut}' buttonIcon='chevron-right'  hideTitle=['all']  />
-		<#else>
-			<@aButton color='primary disabled' disabled=true href='' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut}' buttonIcon='chevron-right' hideTitle=['all'] />
-		</#if>
-		<@aButton color='primary' href='jsp/admin/plugins/quicklinks/DoCopy${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] />
-		<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ConfirmRemove${jspRef}.jsp?quicklinks_id=${quicklinks.id}&${paramId}=${entry.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
-	</@td>            
-</@tr>
+<@manageFeatureItem>
+	<@manageFeatureItemColumn class='ps-${[depth * 3, 5]?min}'>
+		<#if depth gt 0><@icon style='corner-down-right' class='me-2 text-secondary' /></#if><@p class='fw-bold mb-0 me-2'>${entry.title!}</@p>
+		<@tag color='light'>#i18n{${entry.entryType.titleI18nKey}}</@tag>
+	</@manageFeatureItemColumn>
+	<@manageFeatureItemColumn auto=true align='end'>
+		<@tform method='post' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' name='entry_operation_${entry.id}'>
+			<@input type='hidden' name='action' value='modifyQuicklinks' />
+			<@input type='hidden' name='quicklinks_id' value='${quicklinks.id}' />
+			<@input type='hidden' name='entry_id' value='${entry.id}' />
+			<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&amp;entry_id=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' buttonIcon='pencil' hideTitle=['all'] />
+			<@button type='submit' color='primary' name='entry_operation' value='goUp' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' buttonIcon='chevron-up' hideTitle=['all'] disabled=!(entry.idOrder gt 0) />
+			<@button type='submit' color='primary' name='entry_operation' value='goDown' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down' hideTitle=['all'] disabled=!entry?has_next />
+			<@button type='submit' color='primary' name='entry_operation' value='goIn' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoIn}' buttonIcon='chevron-left' hideTitle=['all'] disabled=!entry?has_next />
+			<@button type='submit' color='primary' name='entry_operation' value='goOut' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut}' buttonIcon='chevron-right' hideTitle=['all'] disabled=!(entry.idOrder == 0 && entry.idParent gt 0) />
+			<@button type='submit' color='primary' name='entry_operation' value='copy' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] />
+			<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=confirmRemoveEntry&amp;entry_id=${entry.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
+		</@tform>
+	</@manageFeatureItemColumn>
+</@manageFeatureItem>
 <#assign child_entries_list = entry.getChilds(plugin) />
 <#if child_entries_list?has_content>
-	<@commonListTable items=child_entries_list depth=depth+1 jspRef=jspRef paramId=paramId />
+	<@commonListTable items=child_entries_list depth=depth+1 />
 </#if>
 </#list>
 </#if>

@@ -2,17 +2,18 @@
 <@pageContainer>
     <@pageColumn >
         <@pageHeader title='#i18n{quicklinks.modify_entry_text.adminTitle}' />
-		<@tform name='create_entry_text' action='jsp/admin/plugins/quicklinks/DoModifyEntry.jsp' boxed=true>
+		<@tform name='modify_entry_text' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' boxed=true>
+		<@input type='hidden' name='action' value='modifyEntry' />
 		<@input type='hidden' name='entry_id' id='entry_id' value=entry.id! />
-		<@formGroup labelKey='#i18n{quicklinks.create_entry_text.labelTitle}' mandatory=true>
-			<@input name='title' maxlength=255 value='${entry.title!}' />
+		<@formGroup labelKey='#i18n{quicklinks.create_entry_text.labelTitle}' labelFor='title' mandatory=true>
+			<@input mandatory=true name='title' id='title' maxlength=255 value='${entry.title!}' />
 		</@formGroup>
-		<@formGroup labelKey='#i18n{quicklinks.create_entry_text.labelDescription}' mandatory=true>
-			<@input type='textarea' richtext=true name='description'  value=entry.description! />
+		<@formGroup labelKey='#i18n{quicklinks.create_entry_text.labelDescription}' labelFor='description' mandatory=true>
+			<@input type='textarea' richtext=true name='description' id='description' value=entry.description! />
 		</@formGroup>
 		<@formGroup>
-			<@button color='primary' type='submit' btnIcon='check' title='#i18n{quicklinks.modify_entry_text.buttonLabelModify}' />
-			<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" btnIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
+			<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_text.buttonLabelModify}' />
+			<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyQuicklinks&amp;quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

@@ -3,7 +3,8 @@
     <@pageColumn id='edit_quicklinks'>
         <@pageHeader title='#i18n{quicklinks.modify_quicklinks.adminTitle}' >
 			<#if entry_type_list?has_content>
-				<@tform  name='create_entry' action='jsp/admin/plugins/quicklinks/CreateEntry.jsp' >
+				<@tform name='create_entry' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp'>
+					<@input type='hidden' name='view' value='createEntry' />
 					<@input type="hidden" name="quicklinks_id" value="${quicklinks.id}" />
 					<@formGroup rows=2 mandatory=true>
 						<@inputGroup>
@@ -24,13 +25,12 @@
 			</#if>
 		</@pageHeader>
 		<@row>
-			<@columns sm=3>
-				<@box title='#i18n{quicklinks.modify_quicklinks.adminTitle}'>
-				<@boxBody>
-				<@tform method='post' action='jsp/admin/plugins/quicklinks/DoModifyQuicklinks.jsp' name='modify_quicklinks' id='modify_quicklinks'>
+			<@columns sm=4>
+				<@tform method='post' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' name='modify_quicklinks' id='modify_quicklinks' boxed=true>
+					<@input type='hidden' name='action' value='modifyQuicklinks' />
 					<@input type='hidden' name='quicklinks_id' value=quicklinks.id />
 					<@formGroup labelKey='#i18n{quicklinks.modify_quicklinks.labelTitle}' labelFor='title' helpKey='#i18n{quicklinks.modify_quicklinks.descriptionTitle}' mandatory=true>
-						<@input type='text' id='title' name='title' maxlength=255 value=quicklinks.title />
+						<@input mandatory=true type='text' id='title' name='title' maxlength=255 value=quicklinks.title />
 					</@formGroup>
 					<@formGroup labelKey='#i18n{quicklinks.modify_quicklinks.labelType}' labelFor='type' helpKey='#i18n{quicklinks.modify_quicklinks.descriptionType}' mandatory=true>
 						<@select name='type' default_value=quicklinks.type.value?string items=type_list sort=true />
@@ -48,33 +48,22 @@
 						<@select name='state' default_value=quicklinks.enabled?string items=state_list sort=true />
 					</@formGroup>
 					<@formGroup>
-						<@button type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' color='primary' size='sm' />
-						<@button type='submit' name='apply' buttonIcon='save' title='#i18n{quicklinks.modify_quicklinks.buttonLabelApply}' color='primary' size='sm' />
-						<@aButton href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' buttonIcon='times' color='danger' size='sm' title='#i18n{portal.admin.message.buttonCancel}' />
+						<@button type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' color='primary' />
+						<@button type='submit' name='apply' buttonIcon='device-floppy' title='#i18n{quicklinks.modify_quicklinks.buttonLabelApply}' color='primary' />
+						<@aButton href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' />
 					</@formGroup>
 				</@tform>
-				</@boxBody>
-				</@box>
 			</@columns>
-			<@columns sm=9>
-				<@box title='#i18n{quicklinks.modify_quicklinks.entry_list.adminTitle}'>
-				<@boxBody>
+			<@columns sm=8 id='entry_list'>
+				<@h level=3 class='mb-0'>#i18n{quicklinks.modify_quicklinks.entry_list.adminTitle}</@h>
 				<#if entry_list?has_content>
-					<@table headBody=true>
-						<@tr>
-							<@th>#i18n{quicklinks.modify_quicklinks.entry_list.labelTitle}</@th>
-							<@th>#i18n{quicklinks.modify_quicklinks.entry_list.labelType}</@th>
-							<@th>#i18n{quicklinks.modify_quicklinks.entry_list.labelActions}</@th>
-						</@tr>
-						<@tableHeadBodySeparator />
-						<@commonListTable items=entry_list depth=0 jspRef="Entry" paramId="entry_id" />
-					</@table>
+					<@manageFeature>
+						<@commonListTable items=entry_list depth=0 />
+					</@manageFeature>
 					<@paginationAdmin paginator=paginator combo=1 showcount=0 />
 				<#else>
 					<@empty />
 				</#if>
-				</@boxBody>
-				</@box>
 			</@columns>
 		</@row>
 	</@pageColumn>

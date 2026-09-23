@@ -103,7 +103,7 @@ public class EntryDAO implements IEntryDAO
      */
     public IEntry load( int nId, Plugin plugin )
     {
-        IEntry entry = new Entry( );
+        IEntry entry = null;
 
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
@@ -112,6 +112,7 @@ public class EntryDAO implements IEntryDAO
 
             if ( daoUtil.next( ) )
             {
+                entry = new Entry( );
                 entry.setId( daoUtil.getInt( 1 ) );
                 entry.setIdQuicklinks( daoUtil.getInt( 2 ) );
 

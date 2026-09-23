@@ -1,56 +1,49 @@
 <@pageContainer>
     <@pageColumn >
-        <@pageHeader title='#i18n{quicklinks.modify_entry_url.adminTitle}' />
-		<@tform enctype='multipart/form-data' name='modify_entry_url' action='jsp/admin/plugins/quicklinks/DoCreateEntry.jsp' boxed=true>
+        <@pageHeader title='#i18n{quicklinks.create_entry_url.adminTitle}' />
+		<@tform enctype='multipart/form-data' name='create_entry_url' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' boxed=true>
+		<@input type='hidden' name='action' value='createEntry' />
 		<@input type='hidden' name='entry_type_id' id='entry_type_id' value=entry.entryType.id />
 		<@input type='hidden' name='quicklinks_id' id='quicklinks_id' value=entry.idQuicklinks />
-		<@row>
-			<@columns sm=3>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTitle}' labelFor='title' mandatory=true>
-					<@input name='title' id='title' maxlength=255 value=entry.title! />
-				</@formGroup>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelUrl}' labelFor='url' mandatory=true>
-					<@inputGroup>
-						<@inputGroupItem>
-							<@icon style='link' />
-						</@inputGroupItem>
-						<@input name='url' id='url' maxlength=255 value=entry.url! />
-					</@inputGroup>
-				</@formGroup>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelDescription}' labelFor='description'>
-					<@input name='description' id='description' maxlength=255 value=entry.description! />
-				</@formGroup>
-				<@formGroup>
-					<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_url.buttonLabelModify}' />
-					<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
-				</@formGroup>
-			</@columns>
-			<@columns sm=3>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelImage}' labelFor='image'>
-					<@input type='file' name='image' id='image' />
-					<@input type='hidden' name='update_image' id='update_image' value='true' />
-				</@formGroup>
-				<@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelDisplayProperties}' labelFor='display_properties' mandatory=true>
-				<#list display_properties_list as item>
-					<#assign isTargetChecked='false' />
-					<#if item.code=display_properties_default_value?string><#assign isTargetChecked='true' /></#if> 
-					<@radioButton name='display_properties' id='display_properties_${item.code}' labelKey='#i18n{${item.name}}' orientation='' value='${item.code}' checked=isTargetChecked?boolean />
-				</#list>
-				</@formGroup>
-			</@columns>
-			<@columns sm=3>
-			    <@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelTarget}' labelFor='blankTarget' mandatory=false>
-					<@checkBox name='target' id='blankTarget' labelKey='#i18n{quicklinks.modify_entry_url.target.blank}' value='_blank' />
-				</@formGroup>
-                <@formGroup labelKey='#i18n{quicklinks.modify_entry_url.labelLinkProperties}' labelFor='link_properties' mandatory=true>
-				<#list link_properties_list as item>
-					<#assign isTargetChecked='false' />
-					<#if item.code=link_properties_default_value?string ><#assign isTargetChecked='true' /></#if> 
-					<@radioButton name='link_properties' id='link_properties_${item.code}' labelKey='#i18n{${item.name}}' orientation='' value='${item.code}' checked=isTargetChecked?boolean />
-				</#list>
-				</@formGroup>
-			</@columns>
-			</@row>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelTitle}' labelFor='title' mandatory=true>
+				<@input mandatory=true name='title' id='title' maxlength=255 value=entry.title! />
+			</@formGroup>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelUrl}' labelFor='url' mandatory=true>
+				<@inputGroup>
+					<@inputGroupItem>
+						<@icon style='link' />
+					</@inputGroupItem>
+					<@input mandatory=true name='url' id='url' maxlength=255 value=entry.url! />
+				</@inputGroup>
+			</@formGroup>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelDescription}' labelFor='description'>
+				<@input name='description' id='description' maxlength=255 value=entry.description! />
+			</@formGroup>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelImage}' labelFor='image'>
+				<@input type='file' name='image' id='image' />
+				<@input type='hidden' name='update_image' id='update_image' value='true' />
+			</@formGroup>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelDisplayProperties}' labelFor='display_properties' mandatory=true>
+			<#list display_properties_list as item>
+				<#assign isTargetChecked='false' />
+				<#if item.code=display_properties_default_value?string><#assign isTargetChecked='true' /></#if> 
+				<@radioButton name='display_properties' id='display_properties_${item.code}' labelKey='#i18n{${item.name}}' orientation='' value='${item.code}' checked=isTargetChecked?boolean />
+			</#list>
+			</@formGroup>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelTarget}' labelFor='blankTarget' mandatory=false>
+				<@checkBox orientation='switch' name='target' id='blankTarget' labelKey='#i18n{quicklinks.create_entry_url.target.blank}' value='_blank' />
+			</@formGroup>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_url.labelLinkProperties}' labelFor='link_properties' mandatory=true>
+			<#list link_properties_list as item>
+				<#assign isTargetChecked='false' />
+				<#if item.code=link_properties_default_value?string ><#assign isTargetChecked='true' /></#if> 
+				<@radioButton name='link_properties' id='link_properties_${item.code}' labelKey='#i18n{${item.name}}' orientation='' value='${item.code}' checked=isTargetChecked?boolean />
+			</#list>
+			</@formGroup>
+			<@formGroup>
+				<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.create_entry_url.buttonLabelCreate}' />
+				<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyQuicklinks&amp;quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
+			</@formGroup>
 		</@tform>
 	</@pageColumn>
 </@pageContainer>

@@ -1,23 +1,24 @@
 <@pageContainer>
     <@pageColumn >
         <@pageHeader title='#i18n{quicklinks.modify_entry_select_option.adminTitle}' />
-		<@tform id='modify_entry_select_option' name='modify_entry_select_option' action='jsp/admin/plugins/quicklinks/DoModifyEntrySelectOption.jsp' boxed=true>
+		<@tform id='modify_entry_select_option' name='modify_entry_select_option' action='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp' boxed=true>
+			<@input type='hidden' name='action' value='modifySelectOption' />
 			<@input type='hidden' name='option_id' id='option_id' value='${entry_select_option.id}' />
 			<@input type='hidden' name='entry_id' id='entry_id' value='${entry_select_option.idEntry}' />
-			<@formGroup labelKey='#i18n{quicklinks.modify_entry_select_option.labelTitle}' mandatory=true>
-				<@input name='title' maxlength=255 value=entry_select_option.title! />
+			<@formGroup labelKey='#i18n{quicklinks.modify_entry_select_option.labelTitle}' labelFor='title' mandatory=true>
+				<@input mandatory=true name='title' id='title' maxlength=255 value=entry_select_option.title! />
 			</@formGroup>
-			<@formGroup labelKey='#i18n{quicklinks.create_entry_select_option.labelUrl}' mandatory=true>
+			<@formGroup labelKey='#i18n{quicklinks.create_entry_select_option.labelUrl}' labelFor='url' mandatory=true>
 				<@inputGroup>
 					<@inputGroupItem>
 						<@icon style='link' />
 					</@inputGroupItem>
-					<@input  name='url' id='url' maxlength=255 value=entry_select_option.url! />
+					<@input mandatory=true name='url' id='url' maxlength=255 value=entry_select_option.url! />
 				</@inputGroup>
 			</@formGroup>
 			<@formGroup>
 				<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_select_option.buttonLabelModify}' />
-				<@aButton color='default' href="jsp/admin/plugins/quicklinks/ModifyQuicklinks.jsp?&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.admin.message.buttonCancel}' />
+				<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&amp;entry_id=${entry.id}#option_list" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

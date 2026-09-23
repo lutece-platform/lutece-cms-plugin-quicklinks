@@ -1,6 +1,6 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 
-${ pageContext.setAttribute( 'strContent', quicklinksJspBean.processController( pageContext.request , pageContext.response ) ) }
+${ pageContext.setAttribute( 'strContent', quicklinksEntrySelectJspBean.processController( pageContext.request , pageContext.response ) ) }
 
 <jsp:include page="../../AdminHeader.jsp" />
 

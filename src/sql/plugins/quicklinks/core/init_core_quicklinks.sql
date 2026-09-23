@@ -5,7 +5,7 @@
 -- Dumping data for table core_admin_right
 --
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url) VALUES 
-('QUICKLINKS_MANAGEMENT','quicklinks.adminFeature.quicklinks_management.name',2,'jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp','quicklinks.adminFeature.quicklinks_management.description',0,'quicklinks','APPLICATIONS','images/admin/skin/plugins/quicklinks/quicklinks.png',NULL);
+('QUICKLINKS_MANAGEMENT','quicklinks.adminFeature.quicklinks_management.name',2,'jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp','quicklinks.adminFeature.quicklinks_management.description',0,'quicklinks','APPLICATIONS','ti ti-link',NULL);
 
 --
 -- Dumping data for table core_user_right

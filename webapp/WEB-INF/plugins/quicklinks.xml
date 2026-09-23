@@ -45,6 +45,7 @@
             <feature-title>quicklinks.adminFeature.quicklinks_management.name</feature-title>
             <feature-description>quicklinks.adminFeature.quicklinks_management.description</feature-description>
             <feature-level>2</feature-level>
+            <feature-group>APPLICATIONS</feature-group>
             <feature-url>jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp</feature-url>
         </admin-feature>
     </admin-features>
