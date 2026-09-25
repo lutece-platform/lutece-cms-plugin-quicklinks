@@ -22,7 +22,7 @@
 			<@columns sm=9 id='option_list'>
 				<@div class='d-flex justify-content-between align-items-center'>
 					<@h level=3 class='mb-0'>#i18n{quicklinks.modify_entry_select.option_list.adminTitle}</@h>
-					<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp?view=createSelectOption&amp;entry_id=${entry.id}' buttonIcon='plus' title='#i18n{quicklinks.modify_entry_select.option_list.buttonLabelCreate}' />
+					<@offcanvas id='offcanvasCreateOption' targetUrl='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp?view=createSelectOption&amp;entry_id=${entry.id}' useIframe=true title='#i18n{quicklinks.modify_entry_select.option_list.buttonLabelCreate}' btnTitle='#i18n{quicklinks.modify_entry_select.option_list.buttonLabelCreate}' btnIcon='plus' btnColor='primary' position='end' size='half' />
 				</@div>
 				<#if option_list?has_content>
 					<@manageFeature>
@@ -37,10 +37,12 @@
 									<@input type='hidden' name='action' value='modifyEntry' />
 									<@input type='hidden' name='entry_id' value='${option.idEntry}' />
 									<@input type='hidden' name='option_id' value='${option.id}' />
-									<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp?view=modifySelectOption&amp;option_id=${option.id}&amp;entry_id=${option.idEntry}' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' buttonIcon='pencil' hideTitle=['all'] />
-									<@button type='submit' color='primary' name='option_operation' value='goUp' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' buttonIcon='chevron-up' hideTitle=['all'] disabled=option?is_first />
-									<@button type='submit' color='primary' name='option_operation' value='goDown' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down' hideTitle=['all'] disabled=!option?has_next />
-									<@button type='submit' color='primary' name='option_operation' value='copy' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] />
+									<@btnGroup class='me-1' ariaLabel='#i18n{portal.util.labelActions}'>
+										<@button type='submit' color='light' name='option_operation' value='goUp' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' buttonIcon='chevron-up' hideTitle=['all'] disabled=option?is_first />
+										<@button type='submit' color='light' name='option_operation' value='goDown' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down' hideTitle=['all'] disabled=!option?has_next />
+									</@btnGroup>
+									<@offcanvas id='offcanvasModifyOption-${option.id}' targetUrl='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp?view=modifySelectOption&amp;option_id=${option.id}&amp;entry_id=${option.idEntry}' useIframe=true title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' btnTitle='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' btnIcon='pencil' btnColor='primary' btnClass='me-1' hideTitle=['all'] position='end' size='half' />
+									<@button type='submit' class='me-1' color='primary' name='option_operation' value='copy' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] />
 									<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ManageEntrySelectOptions.jsp?view=confirmRemoveSelectOption&amp;option_id=${option.id}&amp;entry_id=${option.idEntry}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
 								</@tform>
 							</@manageFeatureItemColumn>
@@ -49,7 +51,9 @@
 					</@manageFeature>
 					<@paginationAdmin paginator=paginator combo=1 />
 				<#else>
-					<@empty title='#i18n{quicklinks.modify_entry_select.option_list.noOption}' />
+					<@card>
+						<@empty title='#i18n{quicklinks.modify_entry_select.option_list.noOption}' iconName='list' />
+					</@card>
 				</#if>
 			</@columns>
 		</@row>

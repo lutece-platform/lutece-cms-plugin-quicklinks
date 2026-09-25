@@ -1,1 +1,5 @@
-<@cInline class='${(quicklinks.@cssStyle)?if_exists}' id='quicklinks_${entry_internal_link.idQuicklinks}'>${entry_internal_link.content!}</@cInline>
+<@cTpl>
+<#assign entryClass = '${(quicklinks.@cssStyle)!}'>
+<#assign entryId = 'quicklinks_' + entry_internal_link.idQuicklinks?c>
+<@cInline class=entryClass id=entryId>${entry_internal_link.content!}</@cInline>
+</@cTpl>
