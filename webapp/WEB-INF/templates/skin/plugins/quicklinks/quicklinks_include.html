@@ -1,20 +1,28 @@
- <#macro listEntries items depth >
-	<#if items?has_content >
-	<@chList class=(depth == 0)?then('${(quicklinks.@cssStyle)?if_exists}', '') id=(depth == 0)?then('quicklinks_${quicklinks.@id}', '')>
-	<#list items as entry >
+<@cTpl>
+<#macro listEntries items depth>
+	<#if items?has_content>
+	<#local listClass = ''>
+	<#local listId = ''>
+	<#if depth == 0>
+		<#local listClass = '${(quicklinks.@cssStyle)!}'>
+		<#local listId = 'quicklinks_${quicklinks.@id}'>
+	</#if>
+	<@chList class=listClass id=listId>
+	<#list items as entry>
 		<@chItem>
 			${entry.entry_content}
-        	<#assign child_entries_list = entry.entry />
-        	<#if child_entries_list?has_content>
+			<#local child_entries_list = entry.entry />
+			<#if child_entries_list?has_content>
 				<@listEntries items=child_entries_list depth=depth+1 />
-        	</#if>
-        </@chItem>
+			</#if>
+		</@chItem>
 	</#list>
 	</@chList>
 	</#if>
-</#macro> 
+</#macro>
 <#assign quicklinks = quicklinks.quicklinks />
-<@cBlock id='quicklinks_${quicklinks.@id}_content'>
-	<!--<h3>${quicklinks.@title}</h3>-->
+<#assign contentId = 'quicklinks_${quicklinks.@id}_content'>
+<@cBlock id=contentId>
 	<@listEntries items=quicklinks.entry depth=0 />
 </@cBlock>
+</@cTpl>

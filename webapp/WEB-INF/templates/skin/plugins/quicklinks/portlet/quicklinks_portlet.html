@@ -1,8 +1,10 @@
-<#-- Quicklinks portlet: the list of entries, each entry rendering its own html, children nested.
+<@cTpl>
+<#-- Default template of the quicklinks portlets : the list of entries, each entry rendering its own html, children nested.
      Skin templates run with an undefined output format, so ?no_esc is refused and the html goes out as it is.
-     Ported from webapp/WEB-INF/xsl/normal/portlet_quicklinks.xsl, which the v8 core no longer applies. -->
+     Converted from the v7 "Défaut" XSL style (webapp/WEB-INF/xsl/normal/portlet_quicklinks.xsl), without its jQuery superfish menu script. -->
 <#macro quicklinksEntries items depth=0>
-<@chList class=(depth == 0)?then(css_style!'', '')>
+<#local entriesClass = (depth == 0)?then(css_style!'', '')>
+<@chList class=entriesClass>
 	<#list items as item>
 	<@chItem class='quicklinks-entry'>
 		${item.content!""}
@@ -13,8 +15,14 @@
 	</#list>
 </@chList>
 </#macro>
-<@cBlock class='quicklinks-portlet portlet-content'>
-<#if items?has_content>
-	<@quicklinksEntries items=items />
+<@cSection class='portlet portlet-quicklinks ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
 </#if>
-</@cBlock>
+	<@cBlock class='portlet-content'>
+	<#if items?has_content>
+		<@quicklinksEntries items=items />
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

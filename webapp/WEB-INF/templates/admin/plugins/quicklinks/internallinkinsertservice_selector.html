@@ -29,9 +29,7 @@
 					<@input type='hidden' name='page_name_${page.idPage!}' id='page_name_${page.idPage!}' value='${page.labelPage}' />
 					<@div class='d-flex justify-content-between mb-1'>
 						<@radioButton name='id_page' id='page_radio_${page.idPage!}' labelKey='<strong>${page.labelPage}</strong> [${page.idPage!}]' labelFor='page_radio_${page.idPage!}' value='${page.idPage!}' />
-						<@link class='btn btn-outline-secondary btn-sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{quicklinks.selector.pageShowPage}'>
-							<@icon style='external-link' />
-						</@link>
+						<@aButton color='outline-secondary' size='sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{quicklinks.selector.pageShowPage}' buttonIcon='external-link' hideTitle=['all'] />
 					</@div>
 					</#list>
 				</@boxBody>
@@ -87,7 +85,7 @@
 <#else>
 	<@row>	
 		<@columns class='d-flex justify-content-center'>
-			<@empty subtitle=' ' />
+			<@empty title='#i18n{quicklinks.selector.noPage}' iconName='file-off' subtitle='#i18n{quicklinks.selector.noPageHelp}' />
 		</@columns>
 	</@row>	
 </#if>

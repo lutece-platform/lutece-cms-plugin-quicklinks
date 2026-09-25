@@ -37,3 +37,10 @@ INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id
 INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES 
 ('QUICKLINKS_PORTLET','quicklinks.portlet.name','plugins/quicklinks/CreateQuicklinksPortlet.jsp','plugins/quicklinks/ModifyQuicklinksPortlet.jsp','fr.paris.lutece.plugins.quicklinks.business.portlet.QuicklinksPortletHome','quicklinks','plugins/quicklinks/DoCreateQuicklinksPortlet.jsp','','/admin/plugins/quicklinks/list_quicklinks.html','','plugins/quicklinks/DoModifyQuicklinksPortlet.jsp','','/admin/plugins/quicklinks/list_quicklinks.html','');
 
+--
+-- FreeMarker template available for the quicklinks portlets (4.0.0), registered in the core (Section Template Management feature)
+--
+-- changeset quicklinks:init_core_quicklinks.sql-rev1.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_portlet_template WHERE id_portlet_type = 'QUICKLINKS_PORTLET'
+INSERT INTO core_portlet_template (id_portlet_type, description, template_path) VALUES ('QUICKLINKS_PORTLET', 'Défaut', 'skin/plugins/quicklinks/portlet/quicklinks_portlet.html');

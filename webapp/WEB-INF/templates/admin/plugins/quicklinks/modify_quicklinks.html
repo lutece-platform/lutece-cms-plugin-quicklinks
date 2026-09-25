@@ -62,7 +62,9 @@
 					</@manageFeature>
 					<@paginationAdmin paginator=paginator combo=1 showcount=0 />
 				<#else>
-					<@empty />
+					<@card>
+						<@empty title='#i18n{quicklinks.modify_quicklinks.entry_list.noEntry}' iconName='list-details' subtitle='#i18n{quicklinks.modify_quicklinks.entry_list.noEntryHelp}' />
+					</@card>
 				</#if>
 			</@columns>
 		</@row>

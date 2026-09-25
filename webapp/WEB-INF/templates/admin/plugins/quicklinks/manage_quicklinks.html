@@ -2,7 +2,7 @@
     <@pageColumn>
         <@pageHeader title='#i18n{quicklinks.manage_quicklinks.adminTitle}'>
 		<#if permission_create_quicklinks>
-			<@aButton href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=createQuicklinks' title='#i18n{quicklinks.manage_quicklinks.buttonCreate}' buttonIcon='plus' color='primary' />
+			<@offcanvas id='offcanvasCreate' targetUrl='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=createQuicklinks' useIframe=true title='#i18n{quicklinks.manage_quicklinks.buttonCreate}' btnTitle='#i18n{quicklinks.manage_quicklinks.buttonCreate}' btnIcon='plus' btnColor='primary' position='end' size='half' />
 		</#if>
         </@pageHeader>
 		<#if quicklinks_list?has_content>
@@ -25,18 +25,28 @@
 						<@tag color='danger' tagIcon='x' title='#i18n{portal.util.labelDisabled}'>#i18n{portal.util.labelDisabled}</@tag>
 					</#if>
 				</@manageFeatureItemColumn>
-				<@manageFeatureItemColumn auto=true align='end' class='gap-1'>
-					<#list quicklinksWithActions.quicklinks_actions! as action>
-						<#assign btnStyle><#if action.nameKey=="quicklinks.action.delete.name" || action.nameKey=="quicklinks.action.disable.name">danger<#elseif action.nameKey=="quicklinks.action.enable.name" >success<#else>primary</#if></#assign>
-						<@aButton color=btnStyle href="${action.url}&amp;quicklinks_id=${quicklinks.id}" title=action.description hideTitle=['all'] buttonIcon=action.iconUrl />
+				<#if quicklinksWithActions.quicklinks_actions?has_content>
+				<@manageFeatureItemColumn align='end'>
+					<@aButton class='dropdown-toggle' id='quicklinks-actions-${quicklinks.id}' dropdownMenu=true href='#' title='#i18n{portal.util.labelActions}' color='' hideTitle=['all'] buttonIcon='dots-vertical'>
+					<#list quicklinksWithActions.quicklinks_actions as action>
+						<#assign linkClass><#if action.nameKey=="quicklinks.action.delete.name" || action.nameKey=="quicklinks.action.disable.name">dropdown-item text-danger<#else>dropdown-item</#if></#assign>
+						<@link class=linkClass href='${action.url}&amp;quicklinks_id=${quicklinks.id}' title=action.description label=action.name />
 					</#list>
+					</@aButton>
 				</@manageFeatureItemColumn>
+				</#if>
 			</@manageFeatureItem>
 			</#list>
 		</@manageFeature>
 		<@paginationAdmin paginator=paginator combo=1 />
 		<#else>
-			<@empty />
+			<@card>
+			<#if permission_create_quicklinks>
+				<@empty title='#i18n{quicklinks.manage_quicklinks.noQuicklinks}' iconName='link-off' subtitle='#i18n{quicklinks.manage_quicklinks.noQuicklinksHelp}' actionTitle='#i18n{quicklinks.manage_quicklinks.buttonCreate}' actionUrl='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=createQuicklinks' />
+			<#else>
+				<@empty title='#i18n{quicklinks.manage_quicklinks.noQuicklinks}' iconName='link-off' />
+			</#if>
+			</@card>
 		</#if>
 	</@pageColumn>
 </@pageContainer>

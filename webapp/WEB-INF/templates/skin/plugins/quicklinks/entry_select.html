@@ -1,8 +1,12 @@
+<@cTpl>
 <#if option_list?has_content>
-<@cLabel for='quicklinks_select_${entry_select.id}' label=entry_select.title showLabel=false />
-<@cSelect name='quicklinks_select_${entry_select.id}' id='quicklinks_select_${entry_select.id}' class='form-select ${(quicklinks.@cssStyle)?if_exists}' params='data-target="${entry_select.target!}" onchange="window.open(this.value, this.dataset.target)"'>
-<#list option_list as option>
-	<@cOption value=option.url label=option.title />
-</#list>
-</@cSelect>
+	<#assign selectId = 'quicklinks_select_' + entry_select.id?c>
+	<#assign selectClass = 'form-select ${(quicklinks.@cssStyle)!}'>
+	<@cLabel for=selectId label=entry_select.title showLabel=false />
+	<@cSelect name=selectId id=selectId class=selectClass params='data-target="${entry_select.target!}" onchange="window.open(this.value, this.dataset.target)"'>
+	<#list option_list as option>
+		<@cOption value=option.url label=option.title />
+	</#list>
+	</@cSelect>
 </#if>
+</@cTpl>

@@ -1,15 +1,21 @@
+<@cTpl>
+<#assign entryClass = '${(quicklinks.@cssStyle)!}'>
+<#assign idQuicklinks = entry_url.idQuicklinks?c>
 <#if entry_url.entryUrlDisplayProperties.value != 1>
-	<#assign entryImage><@cImg src=entry_url.imageUrl alt=entry_url.title id='quicklinks_${entry_url.idQuicklinks}_image_${entry_url.id}' class='quicklinks_entry_url quicklinks_entry_url_${entry_url.idQuicklinks}' /></#assign>
+	<#assign imageId = 'quicklinks_' + idQuicklinks + '_image_' + entry_url.id?c>
+	<#assign imageClass = 'quicklinks_entry_url quicklinks_entry_url_' + idQuicklinks>
+	<#assign entryImage><@cImg src=entry_url.imageUrl alt=entry_url.title id=imageId class=imageClass /></#assign>
 	<#if entry_url.entryUrlLinkProperties.value != 2>
-	<@cLink href=entry_url.url label='' title=entry_url.description! target=entry_url.target! class='${(quicklinks.@cssStyle)?if_exists}' id='quicklinks_${entry_url.idQuicklinks}_1'>${entryImage}</@cLink>
+		<@cLink href=entry_url.url label='' title=entry_url.description! target=entry_url.target! class=entryClass id='quicklinks_${idQuicklinks}_1'>${entryImage}</@cLink>
 	<#else>
-	${entryImage}
+		${entryImage}
 	</#if>
 </#if>
 <#if entry_url.entryUrlDisplayProperties.value != 3>
 	<#if entry_url.entryUrlLinkProperties.value != 3>
-	<@cLink href=entry_url.url label=entry_url.title title=entry_url.description! target=entry_url.target! class='${(quicklinks.@cssStyle)?if_exists}' id='quicklinks_${entry_url.idQuicklinks}_2' />
+		<@cLink href=entry_url.url label=entry_url.title title=entry_url.description! target=entry_url.target! class=entryClass id='quicklinks_${idQuicklinks}_2' />
 	<#else>
-	${entry_url.title!}
+		${entry_url.title!}
 	</#if>
 </#if>
+</@cTpl>
