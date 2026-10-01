@@ -1,7 +1,7 @@
 <@pageContainer>
     <@pageColumn>
         <@pageHeader title='#i18n{quicklinks.create_quicklinks.adminTitle}' />
-		<@tform method='post' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' name='create_quicklinks' id='create_quicklinks'>
+		<@tform method='post' action='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' name='create_quicklinks' id='create_quicklinks' boxed=true>
 			<@input type='hidden' name='action' value='createQuicklinks' />
 			<@formGroup labelKey='#i18n{quicklinks.create_quicklinks.labelTitle}' labelFor='title' helpKey='#i18n{quicklinks.create_quicklinks.descriptionTitle}' mandatory=true>
 				<@input mandatory=true type='text' id='title' name='title' maxlength=255 />
@@ -22,8 +22,8 @@
 				<@select name='state' default_value=state_default_value items=state_list sort=true />
 			</@formGroup>
 			<@formGroup>
-				<@button type='submit' buttonIcon='check' title='#i18n{quicklinks.create_quicklinks.buttonLabelCreate}' color='primary' />
-				<@aButton href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' />
+				<@button type='submit' class='form-validation' buttonIcon='check' title='#i18n{quicklinks.create_quicklinks.buttonLabelCreate}' color='primary' />
+				<@aButton class='form-validation' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp' buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

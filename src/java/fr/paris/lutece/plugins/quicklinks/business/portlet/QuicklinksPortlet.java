@@ -39,13 +39,10 @@ import fr.paris.lutece.plugins.quicklinks.business.IEntry;
 import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksHome;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,11 +50,12 @@ import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * This class represents business objects Quicklinks Portlet
+ * This class represents business objects Quicklinks Portlet. The content is rendered with the FreeMarker template chosen for the portlet among the
+ * templates registered for the quicklinks portlet type in the core (Section Template Management feature).
  */
 public class QuicklinksPortlet extends PortletHtmlContent
 {
-    private static final String TEMPLATE_PORTLET = "skin/plugins/quicklinks/portlet/quicklinks_portlet.html";
+    private static final String TEMPLATE_PORTLET_DEFAULT = "skin/plugins/quicklinks/portlet/quicklinks_portlet.html";
     private static final String MARK_QUICKLINKS = "quicklinks";
     private static final String MARK_ITEMS = "items";
     private static final String MARK_CSS_STYLE = "css_style";
@@ -70,7 +68,7 @@ public class QuicklinksPortlet extends PortletHtmlContent
     private int _nStatus;
 
     /**
-     * Returns the html content of the quicklinks portlet.
+     * Returns the html content of the quicklinks portlet, rendered with the template chosen for the portlet
      *
      * @param request
      *            The HTTP Servlet request
@@ -80,7 +78,7 @@ public class QuicklinksPortlet extends PortletHtmlContent
     public String getHtmlContent( HttpServletRequest request )
     {
         Plugin plugin = PluginService.getPlugin( this.getPluginName( ) );
-        Locale locale = ( request != null ) ? request.getLocale( ) : I18nService.getDefaultLocale( );
+        Locale locale = getLocale( request );
 
         Quicklinks quicklinks = QuicklinksHome.findByPrimaryKey( getQuicklinksId( ), plugin );
 
@@ -100,12 +98,12 @@ public class QuicklinksPortlet extends PortletHtmlContent
             listItems.add( buildItem( entry, plugin, locale ) );
         }
 
-        Map<String, Object> model = new HashMap<>( );
+        Map<String, Object> model = createPortletModel( );
         model.put( MARK_QUICKLINKS, quicklinks );
         model.put( MARK_CSS_STYLE, quicklinks.getCssStyle( ) );
         model.put( MARK_ITEMS, listItems );
 
-        return AppTemplateService.getTemplate( TEMPLATE_PORTLET, locale, model ).getHtml( );
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
     }
 
     /**

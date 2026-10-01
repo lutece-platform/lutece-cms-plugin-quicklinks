@@ -4,6 +4,6 @@
 <#assign quicklinksDefault><#if quicklinks_id??>${quicklinks_id?string}<#else>-1</#if></#assign>
 <@select id='quicklinks_id' name='quicklinks_id' default_value=quicklinksDefault items=quicklinks_list />
 <#else>
-<@alert color='warning'>#i18n{quicklinks.list_quicklinks.noQuicklinks}</@alert>
+<@alert color='warning' titleLevel='p' titleClass='mb-0' title='#i18n{quicklinks.list_quicklinks.noQuicklinks}' />
 </#if>
 </@formGroup>
