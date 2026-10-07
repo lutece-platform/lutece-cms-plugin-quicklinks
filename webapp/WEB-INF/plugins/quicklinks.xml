@@ -3,7 +3,7 @@
     <!-- Plugin Informations -->
     <name>quicklinks</name>
     <class>fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin</class>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0-beta-01</version>
     <description>quicklinks.plugin.description</description>
     <documentation/>
     <installation/>
