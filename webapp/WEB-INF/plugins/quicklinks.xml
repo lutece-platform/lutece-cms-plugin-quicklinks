@@ -11,7 +11,7 @@
     <user-guide/>
     <provider>quicklinks.plugin.provider</provider>
     <provider-url>http://lutece.paris.fr</provider-url>
-    <icon-url>themes/admin/shared/plugins/quicklinks/images/quicklinks.png</icon-url>
+    <icon-url>themes/admin/shared/plugins/quicklinks/images/quicklinks.svg</icon-url>
     <copyright>Copyright 2001-2009 Mairie de Paris</copyright>
     <core-version-dependency>
         <min-core-version>8.0.0</min-core-version>

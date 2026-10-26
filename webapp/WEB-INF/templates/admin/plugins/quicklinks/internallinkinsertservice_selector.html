@@ -1,44 +1,41 @@
-<@row class='mt-3'>
-	<@columns>
-		<@tform name='fsearch' method='get' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp'>
+<#--
+ # Link to a page of the site: a search on the name of the pages, the pages found, then the text, caption and target of the link with its preview.
+ # Styles: insert_service.css, behaviours: lutece-insert.js (InsertServiceHeader.jsp): a click selects a page, Valider or a double click inserts it.
+-->
+<div class="lutece-insert">
+	<div class="lutece-insert-head">
+		<span class="lutece-insert-badge lutece-insert-tint-3" aria-hidden="true"><i class="ti ti-file-text"></i></span>
+		<h2>#i18n{quicklinks.selector.pageChoiceTitle}</h2>
+	</div>
+	<@tform name='fsearch' method='get' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp' class='lutece-insert-tools'>
 		<@input type='hidden' value=plugin_name name='plugin_name' />
-		<@input type='hidden' name='input' value=.data_model.input! />	
-		<@formGroup labelKey='#i18n{quicklinks.selector.searchTitle}' helpKey='#i18n{quicklinks.selector.searchHelp}' labelFor='page_name' rows=2>
-			<@inputGroup>
-				<@input name='page_name' id='page_name' placeHolder='#i18n{quicklinks.selector.searchPlaceholder}' />
-				<@inputGroupItem type='btn'>
-					<@button type='submit' title='#i18n{quicklinks.selector.searchBtn}' hideTitle=['all'] buttonIcon='search' />
-				</@inputGroupItem>
-			</@inputGroup>
-		</@formGroup>
-		</@tform>
-	</@columns>
-</@row>	
+		<@input type='hidden' name='input' value=.data_model.input! />
+		<label class="lutece-insert-search" for="page_name"><i class="ti ti-search" aria-hidden="true"></i><span class="visually-hidden">#i18n{quicklinks.selector.searchTitle}</span><input type="text" name="page_name" id="page_name" placeholder="#i18n{quicklinks.selector.searchPlaceholder}" aria-describedby="page_name_help"></label>
+		<@button type='submit' title='#i18n{quicklinks.selector.searchBtn}' buttonIcon='search' color='light' />
+		<#if pages_list?has_content><span class="lutece-insert-count"><#if pages_list?size == 1>#i18n{quicklinks.selector.pageCountOne}<#else>${pages_list?size} #i18n{quicklinks.selector.pageCountMany}</#if></span></#if>
+		<span class="form-text w-100 m-0" id="page_name_help">#i18n{quicklinks.selector.searchHelp}</span>
+	</@tform>
 <#if pages_list?has_content>
-	<@tform name='fenvoi' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp'>
-	<@input type='hidden' name='action' value='insertLink' />
-	<@input type='hidden' value=plugin_name name='plugin_name' />
-	<@input type='hidden' name='input' value=.data_model.input! />	
-	
-	<@row>
-		<@columns sm=8>
-			<@box>
-				<@boxHeader title='#i18n{quicklinks.selector.pageChoiceTitle}' titleClass='h6' />
-				<@boxBody class='overflow-auto'>
-				<#list pages_list?sort_by("idPage") as page>
+	<@tform name='fenvoi' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp' class='d-grid gap-3' params='data-lutece-insert-select'>
+		<@input type='hidden' name='action' value='insertLink' />
+		<@input type='hidden' value=plugin_name name='plugin_name' />
+		<@input type='hidden' name='input' value=.data_model.input! />
+		<@input type='hidden' name='id_page' value='' />
+		<div class="lutece-insert-form">
+			<ul class="lutece-insert-rows lutece-insert-fields lutece-insert-scroll" aria-label="#i18n{quicklinks.selector.pageChoiceTitle}">
+			<#list pages_list?sort_by("idPage") as page>
+				<li>
 					<@input type='hidden' name='page_name_${page.idPage!}' id='page_name_${page.idPage!}' value='${page.labelPage}' />
-					<@div class='d-flex justify-content-between mb-1'>
-						<@radioButton name='id_page' id='page_radio_${page.idPage!}' labelKey='<strong>${page.labelPage}</strong> [${page.idPage!}]' labelFor='page_radio_${page.idPage!}' value='${page.idPage!}' />
-						<@aButton color='outline-secondary' size='sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{quicklinks.selector.pageShowPage}' buttonIcon='external-link' hideTitle=['all'] />
-					</@div>
-					</#list>
-				</@boxBody>
-			</@box>
-		</@columns>
-		<@columns sm=4>
-			<@box>
-				<@boxHeader title='#i18n{quicklinks.selector.insertListTitle}' titleClass='h6' />
-				<@boxBody>
+					<button type="button" class="lutece-insert-row" aria-pressed="false" data-lutece-insert-item data-label="${page.labelPage}" data-fields='{"id_page":"${page.idPage!}"}'>
+						<span class="lutece-insert-badge lutece-insert-tint-3" aria-hidden="true"><i class="ti ti-file-text"></i></span>
+						<span class="lutece-insert-text"><span class="lutece-insert-title">${page.labelPage}</span><span class="lutece-insert-date">#${page.idPage!}</span></span>
+					</button>
+					<@aButton color='outline-secondary' size='sm' href='jsp/site/Portal.jsp?page_id=${page.idPage!}' target='_blank' title='#i18n{quicklinks.selector.pageShowPage}' buttonIcon='external-link' hideTitle=['all'] />
+				</li>
+			</#list>
+			</ul>
+			<div class="lutece-insert-preview">
+				<span class="lutece-insert-label">#i18n{quicklinks.selector.insertListTitle}</span>
 				<@formGroup labelKey='#i18n{quicklinks.selector.linkName}' labelFor='name' rows=2>
 					<@input name='name' id='name' value='' />
 				</@formGroup>
@@ -53,16 +50,23 @@
 						<@option value='_top' label='#i18n{quicklinks.selector.target.top}' />
 					</@select>
 				</@formGroup>
-				</@boxBody>
-			</@box>
-		</@columns>
-	</@row>	
-	<@row>
-		<@columns class='d-flex justify-content-end'>
-			<@button type='submit' class='me-1' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
-			<@button buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' params='onclick="javascript:history.go(-1);"' />
-		</@columns>
-	</@row>
+				<div aria-live="polite">
+					<span class="lutece-insert-label">#i18n{quicklinks.selector.preview}</span>
+					<p class="m-0"><a href="#" class="link-primary text-decoration-underline" id="quicklinks_link_preview" tabindex="-1" onclick="return false;">…</a></p>
+					<dl>
+						<dt>#i18n{quicklinks.selector.captionTitle}</dt><dd id="quicklinks_link_preview_alt">–</dd>
+						<dt>#i18n{quicklinks.selector.captionTarget}</dt><dd id="quicklinks_link_preview_target"></dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+		<div class="lutece-insert-footer">
+			<span class="lutece-insert-selection" aria-live="polite" data-lutece-insert-selection data-text-none="#i18n{quicklinks.selector.noSelection}" data-text-selected="#i18n{quicklinks.selector.selected}">#i18n{quicklinks.selector.noSelection}</span>
+			<div class="lutece-insert-actions">
+				<@button buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' params='onclick="javascript:history.go(-1);"' />
+				<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelValidate}' disabled=true params='data-lutece-insert-submit' />
+			</div>
+		</div>
 	</@tform>
 	<script>
 	document.addEventListener( 'DOMContentLoaded', function(){
@@ -80,12 +84,23 @@
 			fieldName.value = ''
 			fieldName.value = textValue
 		}
+		// The preview of the link: its text (the name of the page when empty), its caption, its target
+		const form = document.forms.fenvoi;
+		const name = document.getElementById( 'name' ), alt = document.getElementById( 'alt' ), target = document.getElementById( 'target' );
+		const preview = document.getElementById( 'quicklinks_link_preview' );
+		const updatePreview = ( ) => {
+			const page = form.querySelector( '[data-lutece-insert-item][aria-pressed="true"]' );
+			preview.textContent = name.value || ( page ? page.dataset.label : '…' );
+			document.getElementById( 'quicklinks_link_preview_alt' ).textContent = alt.value || '–';
+			document.getElementById( 'quicklinks_link_preview_target' ).textContent = target.options[ target.selectedIndex ].text;
+		};
+		[ name, alt ].forEach( ( field ) => field.addEventListener( 'input', updatePreview ) );
+		target.addEventListener( 'change', updatePreview );
+		form.addEventListener( 'click', ( ) => window.setTimeout( updatePreview, 0 ) );
+		updatePreview( );
 	});
 	</script>
 <#else>
-	<@row>	
-		<@columns class='d-flex justify-content-center'>
-			<@empty title='#i18n{quicklinks.selector.noPage}' iconName='file-off' subtitle='#i18n{quicklinks.selector.noPageHelp}' />
-		</@columns>
-	</@row>	
+	<@empty title='#i18n{quicklinks.selector.noPage}' iconName='file-off' subtitle='#i18n{quicklinks.selector.noPageHelp}' />
 </#if>
+</div>
