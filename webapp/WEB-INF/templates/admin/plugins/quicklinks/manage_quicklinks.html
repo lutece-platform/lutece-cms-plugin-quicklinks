@@ -27,7 +27,7 @@
 				</@manageFeatureItemColumn>
 				<#if quicklinksWithActions.quicklinks_actions?has_content>
 				<@manageFeatureItemColumn align='end'>
-					<@aButton class='dropdown-toggle' id='quicklinks-actions-${quicklinks.id}' dropdownMenu=true href='#' title='#i18n{portal.util.labelActions}' color='' hideTitle=['all'] buttonIcon='dots-vertical'>
+					<@aButton class='dropdown-toggle' id='quicklinks-actions-${quicklinks.id}' dropdownMenu=true href='#' title='#i18n{portal.util.labelActions}' color='' hideTitle=['all'] buttonIcon='dots-vertical' params={'aria-label': '#i18n{portal.util.labelActions} ' + quicklinks.title}>
 					<#list quicklinksWithActions.quicklinks_actions as action>
 						<#assign linkClass = (action.nameKey == "quicklinks.action.delete.name" || action.nameKey == "quicklinks.action.disable.name")?then('dropdown-item text-danger', 'dropdown-item')>
 						<@link class=linkClass href='${action.url}&quicklinks_id=${quicklinks.id}' title=action.description label=action.name />

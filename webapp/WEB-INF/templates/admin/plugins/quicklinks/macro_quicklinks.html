@@ -12,15 +12,15 @@
 			<@input type='hidden' name='quicklinks_id' value='${quicklinks.id}' />
 			<@input type='hidden' name='entry_id' value='${entry.id}' />
 			<@btnGroup class='me-1' ariaLabel='#i18n{portal.util.labelActions}'>
-				<@button type='submit' color='light' name='entry_operation' value='goUp' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' buttonIcon='chevron-up' hideTitle=['all'] disabled=!(entry.idOrder gt 0) />
-				<@button type='submit' color='light' name='entry_operation' value='goDown' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down' hideTitle=['all'] disabled=!entry?has_next />
-				<@button type='submit' color='light' name='entry_operation' value='goIn' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoIn}' buttonIcon='chevron-left' hideTitle=['all'] disabled=!entry?has_next />
-				<@button type='submit' color='light' name='entry_operation' value='goOut' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut}' buttonIcon='chevron-right' hideTitle=['all'] disabled=!(entry.idOrder == 0 && entry.idParent gt 0) />
+				<@button type='submit' color='light' name='entry_operation' value='goUp' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp}' buttonIcon='chevron-up' hideTitle=['all'] params={'aria-label': '#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoUp} ' + entry.title!} disabled=!(entry.idOrder gt 0) />
+				<@button type='submit' color='light' name='entry_operation' value='goDown' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown}' buttonIcon='chevron-down' hideTitle=['all'] params={'aria-label': '#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoDown} ' + entry.title!} disabled=!entry?has_next />
+				<@button type='submit' color='light' name='entry_operation' value='goIn' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoIn}' buttonIcon='chevron-left' hideTitle=['all'] params={'aria-label': '#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoIn} ' + entry.title!} disabled=!entry?has_next />
+				<@button type='submit' color='light' name='entry_operation' value='goOut' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut}' buttonIcon='chevron-right' hideTitle=['all'] params={'aria-label': '#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut} ' + entry.title!} disabled=!(entry.idOrder == 0 && entry.idParent gt 0) />
 			</@btnGroup>
 			<@btnGroup ariaLabel='#i18n{portal.util.labelActions}'>
-				<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&entry_id=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' buttonIcon='pencil' hideTitle=['all'] />
-				<@button type='submit' color='primary' name='entry_operation' value='copy' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] />
-				<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=confirmRemoveEntry&entry_id=${entry.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
+				<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&entry_id=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' buttonIcon='pencil' hideTitle=['all'] params={'aria-label': '#i18n{quicklinks.modify_quicklinks.buttonLabelModify} ' + entry.title!} />
+				<@button type='submit' color='primary' name='entry_operation' value='copy' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] params={'aria-label': '#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate} ' + entry.title!} />
+				<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=confirmRemoveEntry&entry_id=${entry.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] params={'aria-label': '#i18n{portal.util.labelDelete} ' + entry.title!} />
 			</@btnGroup>
 		</@tform>
 	</@manageFeatureItemColumn>
