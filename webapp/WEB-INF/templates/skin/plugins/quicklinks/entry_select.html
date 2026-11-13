@@ -8,12 +8,15 @@
 		<@cOption value=option.url label=option.title />
 	</#list>
 	</@cSelect>
+	<#assign buttonId = selectId + '_go'>
+	<@cBtn label='#i18n{quicklinks.entry_select.buttonGo}' type='button' id=buttonId params={'aria-label': '#i18n{quicklinks.entry_select.buttonGo} ' + entry_select.title!} />
 	<script>
-	document.getElementById( '${selectId?js_string?no_esc}' ).addEventListener( 'change', function( ) {
-		// The option opens its page: a relative or a web URL only
-		const url = new URL( this.value, document.baseURI );
+	document.getElementById( '${buttonId?js_string?no_esc}' ).addEventListener( 'click', function( ) {
+		// The button opens the page of the chosen option: a relative or a web URL only
+		const select = document.getElementById( '${selectId?js_string?no_esc}' );
+		const url = new URL( select.value, document.baseURI );
 		if ( url.protocol === 'http:' || url.protocol === 'https:' ) {
-			window.open( url.href, this.dataset.target || '_self' );
+			window.open( url.href, select.dataset.target || '_self' );
 		}
 	} );
 	</script>
