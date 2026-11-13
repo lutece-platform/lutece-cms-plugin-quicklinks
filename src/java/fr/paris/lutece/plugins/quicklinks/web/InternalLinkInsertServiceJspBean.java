@@ -70,7 +70,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 /**
  * This class provides the user interface of the internal link insert service: search a page, then insert a link to it
@@ -203,7 +202,7 @@ public class InternalLinkInsertServiceJspBean extends MVCAdminJspBean implements
         model.put( MARK_ALT, request.getParameter( PARAMETER_ALT ) );
         model.put( MARK_NAME, StringUtils.isEmpty( strName ) ? page.getName( ) : strName );
 
-        String strInsert = escapeEcmaScript( AppTemplateService.getTemplate( TEMPLATE_LINK, null, model ).getHtml( ) );
+        String strInsert = AppTemplateService.getTemplate( TEMPLATE_LINK, null, model ).getHtml( );
         request.getSession( ).setAttribute( InsertServiceSelectorJspBean.SESSION_INSERT, strInsert );
 
         UrlItem urlDoInsert = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_DO_INSERT );
