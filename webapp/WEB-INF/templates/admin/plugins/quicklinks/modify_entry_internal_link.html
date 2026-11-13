@@ -23,7 +23,7 @@
 				</@formGroup>
 				<@formGroup>
 					<@button color='primary' type='submit' buttonIcon='check' title='#i18n{quicklinks.modify_entry_internal_link.buttonLabelModify}' />
-					<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyQuicklinks&amp;quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
+					<@aButton color='light' href="jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyQuicklinks&quicklinks_id=${entry.idQuicklinks}" buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
 				</@formGroup>
 			</@columns>
 			<@columns>
@@ -36,8 +36,8 @@
 <script>
 function linkservice(){
 	const showPreview = document.getElementById('show-preview') 
-	showPreview.innerHTML='';
-	const fen = window.open("${webapp_url}jsp/admin/insert/GetAvailableInsertServices.jsp?input=content&selected_text=quicklinks&mode=0","#i18n{quicklinks.modify_entry_url.labelLinkService}","toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, left=500, top=200, width=800, height=600");
+	showPreview.replaceChildren( );
+	const fen = window.open('${webapp_url?js_string?no_esc}jsp/admin/insert/GetAvailableInsertServices.jsp?input=content&selected_text=quicklinks&mode=0','${i18n('quicklinks.modify_entry_url.labelLinkService')?js_string?no_esc}',"toolbar=no, scrollbars=yes, status=yes, location=no, directories=no, menubar=no, left=500, top=200, width=800, height=600");
 	fen.focus();
 }
 
@@ -49,7 +49,13 @@ document.addEventListener( "DOMContentLoaded", function(){
 		trash = document.getElementById('trash');
 	
 	btnPreview.addEventListener( 'click', ( event ) => {
-		showPreview.innerHTML = content.value
+		// The content is rich text: shown in a sandboxed frame, where its scripts do not run
+		const frame = document.createElement( 'iframe' );
+		frame.setAttribute( 'sandbox', '' );
+		frame.setAttribute( 'title', '${i18n('quicklinks.create_entry_internal_link.buttonShowPreview')?js_string?no_esc}' );
+		frame.className = 'w-100 border-0';
+		frame.srcdoc = content.value;
+		showPreview.replaceChildren( frame );
 		showPreview.classList.remove( 'd-none' );
 		showPreview.classList.add( 'alert', 'alert-info' );
 		return false;

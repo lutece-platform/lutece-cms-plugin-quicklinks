@@ -38,7 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.inject.Inject;
 
@@ -53,6 +55,7 @@ import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksHome;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksType;
 import fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin;
+import fr.paris.lutece.plugins.quicklinks.web.QuicklinksInclude;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -66,6 +69,9 @@ import fr.paris.lutece.portal.web.LocalVariables;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.test.mocks.MockHttpServletRequest;
 import fr.paris.lutece.test.mocks.MockHttpServletResponse;
+import freemarker.core.HTMLOutputFormat;
+import freemarker.core.TemplateHTMLOutputModel;
+import freemarker.template.TemplateModelException;
 
 /**
  * Renders a quicklinks portlet with every shipped FreeMarker template
@@ -79,6 +85,11 @@ public class QuicklinksPortletRenderingTest extends LuteceTestCase
     private static final int ENTRY_TYPE_INTERNAL_LINK = 4;
     private static final int UNKNOWN_TEMPLATE_ID = 99999;
     private static final int TEMPLATE_ONE_COLUMN = 2;
+    private static final String RICH_TEXT_LINK = "<a href=\"jsp/site/Portal.jsp?page_id=1\">rich link</a>";
+    // the link as the sanitizer of the rich text writes it back: its attributes are rewritten, its tags kept
+    private static final String RICH_TEXT_LINK_START = "<a href=\"jsp/site/Portal.jsp?page_id";
+    private static final String RICH_TEXT_LINK_END = ">rich link</a>";
+    private static final String RICH_TEXT_SCRIPT = "<script>window.quicklinksRendering = 1;</script>";
 
     private Plugin _plugin;
     private int _nPageId;
@@ -223,6 +234,54 @@ public class QuicklinksPortletRenderingTest extends LuteceTestCase
         QuicklinksHome.update( _quicklinks, _plugin );
 
         assertEquals( "", _portlet.getHtmlContent( new MockHttpServletRequest( ) ), "a disabled quicklinks should not be rendered" );
+    }
+
+    /**
+     * The html an entry renders is written as markup by the portlet template: its tags are kept, not escaped, and its rich text is
+     * sanitized
+     */
+    @Test
+    public void testEntryHtmlIsWrittenAsMarkup( )
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        LocalVariables.setLocal( null, request, new MockHttpServletResponse( ) );
+        createEntry( RICH_TEXT_LINK + RICH_TEXT_SCRIPT, EntryHome.ROOT_PARENT_ID );
+
+        String strContent = _portlet.getHtmlContent( request );
+
+        assertTrue( strContent.contains( RICH_TEXT_LINK_START ) && strContent.contains( RICH_TEXT_LINK_END ),
+                "the html of an entry should be written as markup: " + strContent );
+        assertFalse( strContent.contains( "&lt;a href" ), "the html of an entry should not be escaped" );
+        assertFalse( strContent.contains( "<script>window.quicklinksRendering" ), "the rich text of an entry should be sanitized" );
+    }
+
+    /**
+     * An included quicklinks is put in the page model as markup, with the html of its entries kept
+     *
+     * @throws TemplateModelException
+     *             if the markup cannot be read
+     */
+    @Test
+    public void testIncludeIsPutAsMarkup( ) throws TemplateModelException
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        LocalVariables.setLocal( null, request, new MockHttpServletResponse( ) );
+        _quicklinks.setType( QuicklinksType.INCLUDE );
+        QuicklinksHome.update( _quicklinks, _plugin );
+        createEntry( RICH_TEXT_LINK, EntryHome.ROOT_PARENT_ID );
+
+        Map<String, Object> rootModel = new HashMap<>( );
+        new QuicklinksInclude( ).fillTemplate( rootModel, null, 0, request );
+        Object include = rootModel.get( QuicklinksInclude.getQuicklinksMarkerPrefix( ) + _quicklinks.getId( ) );
+
+        assertTrue( include instanceof TemplateHTMLOutputModel, "the included quicklinks should be put in the page model as markup" );
+        String strContent = HTMLOutputFormat.INSTANCE.getMarkupString( (TemplateHTMLOutputModel) include );
+        assertTrue( strContent.contains( "quicklinks_" + _quicklinks.getId( ) + "_content" ), "the include should render its block: " + strContent );
+        assertTrue( strContent.contains( CSS_STYLE ), "the include should render the quicklinks CSS style" );
+        assertTrue( strContent.contains( RICH_TEXT_LINK_START ) && strContent.contains( RICH_TEXT_LINK_END ),
+                "the html of an entry should be written as markup: " + strContent );
+        assertTrue( strContent.indexOf( _strRootEntryText ) < strContent.indexOf( _strChildEntryText ),
+                "the include should render the child entry after its parent" );
     }
 
     /**

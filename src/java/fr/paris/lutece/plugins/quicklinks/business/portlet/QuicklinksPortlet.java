@@ -41,12 +41,14 @@ import fr.paris.lutece.plugins.quicklinks.business.QuicklinksHome;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import freemarker.core.TemplateHTMLOutputModel;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -87,6 +89,27 @@ public class QuicklinksPortlet extends PortletHtmlContent
             return "";
         }
 
+        Map<String, Object> model = createPortletModel( );
+        model.put( MARK_QUICKLINKS, quicklinks );
+        model.put( MARK_CSS_STYLE, quicklinks.getCssStyle( ) );
+        model.put( MARK_ITEMS, buildItems( quicklinks, plugin, locale ) );
+
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
+    }
+
+    /**
+     * Builds the view model of the root entries of a quicklinks, and of their children.
+     *
+     * @param quicklinks
+     *            The quicklinks
+     * @param plugin
+     *            The plugin
+     * @param locale
+     *            The locale
+     * @return the items
+     */
+    public static List<QuicklinksItem> buildItems( Quicklinks quicklinks, Plugin plugin, Locale locale )
+    {
         EntryFilter filter = new EntryFilter( );
         filter.setIdQuicklinks( quicklinks.getId( ) );
         filter.setIdParent( EntryHome.ROOT_PARENT_ID );
@@ -98,12 +121,7 @@ public class QuicklinksPortlet extends PortletHtmlContent
             listItems.add( buildItem( entry, plugin, locale ) );
         }
 
-        Map<String, Object> model = createPortletModel( );
-        model.put( MARK_QUICKLINKS, quicklinks );
-        model.put( MARK_CSS_STYLE, quicklinks.getCssStyle( ) );
-        model.put( MARK_ITEMS, listItems );
-
-        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
+        return listItems;
     }
 
     /**
@@ -117,7 +135,7 @@ public class QuicklinksPortlet extends PortletHtmlContent
      *            The locale
      * @return the item
      */
-    private QuicklinksItem buildItem( IEntry entry, Plugin plugin, Locale locale )
+    private static QuicklinksItem buildItem( IEntry entry, Plugin plugin, Locale locale )
     {
         QuicklinksItem item = new QuicklinksItem( );
         item.setId( entry.getId( ) );
@@ -258,11 +276,11 @@ public class QuicklinksPortlet extends PortletHtmlContent
         }
 
         /**
-         * @return the html the entry renders
+         * @return the html the entry renders with its template, as markup the auto-escaping writes as is
          */
-        public String getContent( )
+        public TemplateHTMLOutputModel getContent( )
         {
-            return _strContent;
+            return HtmlMarkup.of( _strContent );
         }
 
         /**

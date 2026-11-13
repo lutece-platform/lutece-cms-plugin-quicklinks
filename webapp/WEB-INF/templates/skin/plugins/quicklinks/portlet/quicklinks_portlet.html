@@ -1,13 +1,13 @@
 <@cTpl>
 <#-- Default template of the quicklinks portlets : the list of entries, each entry rendering its own html, children nested.
-     Skin templates run with an undefined output format, so ?no_esc is refused and the html goes out as it is.
+     The html of an entry is put in the model as markup (QuicklinksPortlet), written as is by the auto-escaping.
      Converted from the v7 "Défaut" XSL style (webapp/WEB-INF/xsl/normal/portlet_quicklinks.xsl), without its jQuery superfish menu script. -->
 <#macro quicklinksEntries items depth=0>
 <#local entriesClass = (depth == 0)?then(css_style!'', '')>
 <@chList class=entriesClass>
 	<#list items as item>
 	<@chItem class='quicklinks-entry'>
-		${item.content!""}
+		${item.content}
 		<#if item.children?has_content>
 			<@quicklinksEntries items=item.children depth=depth+1 />
 		</#if>
