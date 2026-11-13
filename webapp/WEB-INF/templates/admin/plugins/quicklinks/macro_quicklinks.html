@@ -18,9 +18,9 @@
 				<@button type='submit' color='light' name='entry_operation' value='goOut' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelGoOut}' buttonIcon='chevron-right' hideTitle=['all'] disabled=!(entry.idOrder == 0 && entry.idParent gt 0) />
 			</@btnGroup>
 			<@btnGroup ariaLabel='#i18n{portal.util.labelActions}'>
-				<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&amp;entry_id=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' buttonIcon='pencil' hideTitle=['all'] />
+				<@aButton color='primary' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=modifyEntry&entry_id=${entry.id}' title='#i18n{quicklinks.modify_quicklinks.buttonLabelModify}' buttonIcon='pencil' hideTitle=['all'] />
 				<@button type='submit' color='primary' name='entry_operation' value='copy' title='#i18n{quicklinks.modify_quicklinks.entry_list.buttonLabelDuplicate}' buttonIcon='copy' hideTitle=['all'] />
-				<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=confirmRemoveEntry&amp;entry_id=${entry.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
+				<@aButton color='danger' href='jsp/admin/plugins/quicklinks/ManageQuicklinks.jsp?view=confirmRemoveEntry&entry_id=${entry.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
 			</@btnGroup>
 		</@tform>
 	</@manageFeatureItemColumn>

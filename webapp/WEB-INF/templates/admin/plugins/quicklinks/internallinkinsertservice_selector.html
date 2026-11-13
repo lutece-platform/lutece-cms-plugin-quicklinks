@@ -16,7 +16,7 @@
 		<span class="form-text w-100 m-0" id="page_name_help">#i18n{quicklinks.selector.searchHelp}</span>
 	</@tform>
 <#if pages_list?has_content>
-	<@tform name='fenvoi' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp' class='d-grid gap-3' params='data-lutece-insert-select'>
+	<@tform name='fenvoi' action='${url}jsp/admin/plugins/quicklinks/InternalLinkInsertService.jsp' class='d-grid gap-3' params={"data-lutece-insert-select": true}>
 		<@input type='hidden' name='action' value='insertLink' />
 		<@input type='hidden' value=plugin_name name='plugin_name' />
 		<@input type='hidden' name='input' value=.data_model.input! />
@@ -52,7 +52,7 @@
 				</@formGroup>
 				<div aria-live="polite">
 					<span class="lutece-insert-label">#i18n{quicklinks.selector.preview}</span>
-					<p class="m-0"><a href="#" class="link-primary text-decoration-underline" id="quicklinks_link_preview" tabindex="-1" onclick="return false;">…</a></p>
+					<p class="m-0"><a class="link-primary text-decoration-underline" id="quicklinks_link_preview">…</a></p>
 					<dl>
 						<dt>#i18n{quicklinks.selector.captionTitle}</dt><dd id="quicklinks_link_preview_alt">–</dd>
 						<dt>#i18n{quicklinks.selector.captionTarget}</dt><dd id="quicklinks_link_preview_target"></dd>
@@ -63,8 +63,8 @@
 		<div class="lutece-insert-footer">
 			<span class="lutece-insert-selection" aria-live="polite" data-lutece-insert-selection data-text-none="#i18n{quicklinks.selector.noSelection}" data-text-selected="#i18n{quicklinks.selector.selected}">#i18n{quicklinks.selector.noSelection}</span>
 			<div class="lutece-insert-actions">
-				<@button buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' params='onclick="javascript:history.go(-1);"' />
-				<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelValidate}' disabled=true params='data-lutece-insert-submit' />
+				<@aButton buttonIcon='x' color='light' title='#i18n{portal.util.labelCancel}' href='jsp/admin/insert/GetAvailableInsertServices.jsp?input=${(.data_model.input!)?url}' params={"data-lutece-action": "back"} />
+				<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelValidate}' disabled=true params={"data-lutece-insert-submit": true} />
 			</div>
 		</div>
 	</@tform>

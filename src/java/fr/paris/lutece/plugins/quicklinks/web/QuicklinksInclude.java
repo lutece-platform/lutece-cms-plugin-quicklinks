@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.quicklinks.business.Quicklinks;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksFilter;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksHome;
 import fr.paris.lutece.plugins.quicklinks.business.QuicklinksType;
+import fr.paris.lutece.plugins.quicklinks.business.portlet.QuicklinksPortlet;
 import fr.paris.lutece.plugins.quicklinks.service.QuicklinksPlugin;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -46,15 +47,9 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.html.HtmlTemplate;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,8 +57,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * This class provides the user interface to manage quicklinks features
@@ -78,6 +71,7 @@ public class QuicklinksInclude implements PageInclude
 
     // Markers
     private static final String MARK_QUICKLINKS = "quicklinks";
+    private static final String MARK_ITEMS = "items";
     private static final String MARK_PLUGIN = "plugin";
     private static final String MARK_LOCALE = "locale";
 
@@ -105,10 +99,11 @@ public class QuicklinksInclude implements PageInclude
 
         Collection<Quicklinks> listQuicklinks = QuicklinksHome.findbyFilter( filter, plugin );
 
-        // For each quicklinks, generate HTML code and put marker with the associated code in rootModel
+        // For each quicklinks, generate HTML code and put marker with the associated code in rootModel, as markup the page template writes as is
         for ( Quicklinks quicklinks : listQuicklinks )
         {
-            rootModel.put( getQuicklinksMarkerPrefix( ) + String.valueOf( quicklinks.getId( ) ), getTemplateHtmlForQuicklinks( quicklinks, plugin, locale ) );
+            rootModel.put( getQuicklinksMarkerPrefix( ) + String.valueOf( quicklinks.getId( ) ),
+                    HtmlMarkup.of( getTemplateHtmlForQuicklinks( quicklinks, plugin, locale ) ) );
         }
     }
 
@@ -137,18 +132,7 @@ public class QuicklinksInclude implements PageInclude
     {
         HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_QUICKLINKS, quicklinks );
-
-        InputSource in = new InputSource( new ByteArrayInputStream( quicklinks.getXml( plugin, locale ).toString( ).getBytes( ) ) );
-
-        try
-        {
-            model.put( MARK_QUICKLINKS, freemarker.ext.dom.NodeModel.parse( in ) );
-        }
-        catch( ParserConfigurationException | IOException | SAXException e )
-        {
-            AppLogService.error( e );
-        }
-
+        model.put( MARK_ITEMS, QuicklinksPortlet.buildItems( quicklinks, plugin, locale ) );
         model.put( MARK_PLUGIN, plugin );
         model.put( MARK_LOCALE, locale );
 

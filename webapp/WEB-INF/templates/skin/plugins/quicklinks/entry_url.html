@@ -4,16 +4,16 @@
 <#if entry_url.entryUrlDisplayProperties.value != 1>
 	<#assign imageId = 'quicklinks_' + idQuicklinks + '_image_' + entry_url.id?c>
 	<#assign imageClass = 'quicklinks_entry_url quicklinks_entry_url_' + idQuicklinks>
-	<#assign entryImage><@cImg src=entry_url.imageUrl alt=entry_url.title id=imageId class=imageClass /></#assign>
+	<#assign entryImage><@cImg src=safeUrl(entry_url.imageUrl!) alt=entry_url.title id=imageId class=imageClass /></#assign>
 	<#if entry_url.entryUrlLinkProperties.value != 2>
-		<@cLink href=entry_url.url label='' title=entry_url.description! target=entry_url.target! class=entryClass id='quicklinks_${idQuicklinks}_1'>${entryImage}</@cLink>
+		<@cLink href=safeUrl(entry_url.url!) label='' title=entry_url.description! target=entry_url.target! class=entryClass id='quicklinks_${idQuicklinks}_1'>${entryImage}</@cLink>
 	<#else>
 		${entryImage}
 	</#if>
 </#if>
 <#if entry_url.entryUrlDisplayProperties.value != 3>
 	<#if entry_url.entryUrlLinkProperties.value != 3>
-		<@cLink href=entry_url.url label=entry_url.title title=entry_url.description! target=entry_url.target! class=entryClass id='quicklinks_${idQuicklinks}_2' />
+		<@cLink href=safeUrl(entry_url.url!) label=entry_url.title title=entry_url.description! target=entry_url.target! class=entryClass id='quicklinks_${idQuicklinks}_2' />
 	<#else>
 		${entry_url.title!}
 	</#if>
